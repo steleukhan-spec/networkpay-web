@@ -1234,3 +1234,205 @@ body.assist-open .assist-launcher{z-index:71}
   window.addEventListener('resize',schedulePrepare,{passive:true});
 })();
 </script>
+
+<style id="np-v7-4-1-stable-scroll-motion-css">
+/* v7.4.1 — stable viewport motion: safe defaults + JS-driven one-shot animations */
+/* Cancel the fragile v7.4 hidden state. Content is visible by default. */
+.np-scroll-item,
+.np-scroll-item:not(.np-scroll-in),
+.np-scroll-item.np-scroll-in{
+  opacity:1!important;
+  transform:none!important;
+  animation:none!important;
+}
+
+/* Reveal only elements explicitly armed by the new observer. */
+.np5-reveal-pending{opacity:0!important;transform:translate3d(0,18px,0) scale(.988)!important}
+.np5-reveal-done{opacity:1!important;transform:none!important}
+
+/* Revenue chart: visible by default. New JS animates with clip-path so old transform rules cannot hide it. */
+.card.np-trend-card .chart .bar,
+.card.np-trend-card.np-scroll-active .chart .bar,
+.chart .bar{
+  transform:none!important;
+  opacity:1!important;
+  animation:none!important;
+}
+
+/* Disable all legacy money-flow pseudo animations; v7.4.1 uses a real DOM dot instead. */
+.money-flow-card .flow-arrow::before,
+.money-flow-card .flow-arrow::after,
+.money-flow-card .flow-node::after{
+  animation:none!important;
+}
+.money-flow-card .flow-arrow::after{display:none!important}
+.money-flow-card .flow-arrow::before{opacity:.35!important}
+
+.np5-flow-dot{
+  position:absolute;z-index:4;width:12px;height:12px;border-radius:50%;
+  background:#71f1bb;box-shadow:0 0 0 5px rgba(113,241,187,.08),0 0 22px rgba(113,241,187,.9);
+  pointer-events:none;opacity:0;will-change:transform,opacity;
+}
+@media(min-width:701px){
+  .np5-flow-dot{left:0;top:50%;transform:translate3d(-6px,-50%,0)}
+}
+@media(max-width:700px){
+  .np5-flow-dot{left:50%;top:0;transform:translate3d(-50%,-6px,0)}
+  .card.np-trend-card .chart{height:138px!important}
+}
+</style>
+<script id="np-v7-4-1-stable-scroll-motion-js">
+(function(){
+  const seen=new WeakSet();
+  let io=null;
+  let moTimer=0;
+
+  function visibleNow(el){
+    const r=el.getBoundingClientRect();
+    const vh=window.innerHeight||document.documentElement.clientHeight;
+    return r.bottom>10 && r.top<vh*0.9;
+  }
+
+  function safeShow(el){
+    el.classList.remove('np5-reveal-pending');
+    el.classList.add('np5-reveal-done');
+    el.style.removeProperty('opacity');
+    el.style.removeProperty('transform');
+  }
+
+  function reveal(el){
+    if(seen.has(el)){ safeShow(el); return; }
+    seen.add(el);
+    el.classList.remove('np5-reveal-pending');
+    el.classList.add('np5-reveal-done');
+    try{
+      el.animate([
+        {opacity:0, transform:'translate3d(0,18px,0) scale(.988)'},
+        {opacity:1, transform:'translate3d(0,-2px,0) scale(1.002)', offset:.72},
+        {opacity:1, transform:'none'}
+      ],{duration:620,easing:'cubic-bezier(.2,.82,.22,1)',fill:'both'});
+    }catch(e){ safeShow(el); }
+    setTimeout(()=>safeShow(el),850);
+  }
+
+  function animateTrend(card){
+    if(!card || card.dataset.np5TrendPlayed==='1') return;
+    card.dataset.np5TrendPlayed='1';
+    const bars=[...card.querySelectorAll('.chart .bar')];
+    bars.forEach((bar,i)=>{
+      // Arm only at the moment of entry, so bars are never left blank by a failed observer.
+      bar.style.clipPath='inset(100% 0 0 0)';
+      bar.style.opacity='.35';
+      setTimeout(()=>{
+        try{
+          const a=bar.animate([
+            {clipPath:'inset(100% 0 0 0)',opacity:.35},
+            {clipPath:'inset(0% 0 0 0)',opacity:1}
+          ],{duration:720,delay:i*48,easing:'cubic-bezier(.2,.82,.22,1)',fill:'forwards'});
+          a.onfinish=()=>{bar.style.clipPath='';bar.style.opacity='1'};
+        }catch(e){bar.style.clipPath='';bar.style.opacity='1'}
+        setTimeout(()=>{bar.style.clipPath='';bar.style.opacity='1'},1200+i*48);
+      },40);
+    });
+  }
+
+  function flowDots(card){
+    if(!card) return [];
+    return [...card.querySelectorAll('.flow-arrow')].map(arrow=>{
+      let dot=arrow.querySelector('.np5-flow-dot');
+      if(!dot){ dot=document.createElement('span'); dot.className='np5-flow-dot'; arrow.appendChild(dot); }
+      return {arrow,dot};
+    });
+  }
+
+  function animateFlow(card){
+    if(!card) return;
+    const pairs=flowDots(card);
+    const mobile=matchMedia('(max-width:700px)').matches;
+    pairs.forEach(({arrow,dot},i)=>{
+      try{ dot.getAnimations().forEach(a=>a.cancel()); }catch(e){}
+      const distance=mobile?Math.max(28,arrow.getBoundingClientRect().height-2):Math.max(28,arrow.getBoundingClientRect().width-2);
+      const from=mobile?'translate3d(-50%,-6px,0)':'translate3d(-6px,-50%,0)';
+      const to=mobile?`translate3d(-50%,${distance-6}px,0)`:`translate3d(${distance-6}px,-50%,0)`;
+      try{
+        dot.animate([
+          {transform:from,opacity:0},
+          {transform:from,opacity:1,offset:.12},
+          {transform:to,opacity:1,offset:.86},
+          {transform:to,opacity:0}
+        ],{duration:1450,delay:i*230,easing:'cubic-bezier(.4,0,.2,1)'});
+      }catch(e){dot.style.opacity='0'}
+    });
+    // A second pulse makes the concept obvious, but still stops instead of running forever.
+    clearTimeout(card._np5FlowTimer);
+    card._np5FlowTimer=setTimeout(()=>{
+      if(visibleNow(card)) animateFlowOnce(card);
+    },1950);
+  }
+  function animateFlowOnce(card){
+    const pairs=flowDots(card); const mobile=matchMedia('(max-width:700px)').matches;
+    pairs.forEach(({arrow,dot},i)=>{
+      const distance=mobile?Math.max(28,arrow.getBoundingClientRect().height-2):Math.max(28,arrow.getBoundingClientRect().width-2);
+      const from=mobile?'translate3d(-50%,-6px,0)':'translate3d(-6px,-50%,0)';
+      const to=mobile?`translate3d(-50%,${distance-6}px,0)`:`translate3d(${distance-6}px,-50%,0)`;
+      try{dot.animate([{transform:from,opacity:0},{transform:from,opacity:1,offset:.12},{transform:to,opacity:1,offset:.86},{transform:to,opacity:0}],{duration:1450,delay:i*230,easing:'cubic-bezier(.4,0,.2,1)'});}catch(e){}
+    });
+  }
+
+  function classify(el){
+    if(el.classList.contains('money-flow-card')) return 'flow';
+    if(el.classList.contains('np-trend-card') || el.querySelector?.('.section-title')?.textContent?.trim()==='Revenue trend' || el.querySelector?.('.section-title')?.textContent?.trim()==='Динамика дохода' || el.querySelector?.('.section-title')?.textContent?.trim()==='收入趋势') return 'trend';
+    return 'reveal';
+  }
+
+  function onEntry(entry){
+    if(!entry.isIntersecting) return;
+    const el=entry.target, type=classify(el);
+    if(type==='flow') animateFlow(el);
+    else if(type==='trend') animateTrend(el);
+    else reveal(el);
+    io.unobserve(el);
+  }
+
+  function ensureObserver(){
+    if(io) io.disconnect();
+    io=new IntersectionObserver(entries=>entries.forEach(onEntry),{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+  }
+
+  function arm(root=document){
+    ensureObserver();
+    const revealSelector='.executive-banner,.exec-kpi,.channel-card,.activity-row,.split-card,.metric-tile,.rail,.notice,.card:not(.money-flow-card)';
+    root.querySelectorAll?.(revealSelector).forEach(el=>{
+      // Trend card gets its own bar animation but still reveals as a card naturally.
+      const title=el.querySelector?.('.section-title')?.textContent?.trim();
+      if(title==='Revenue trend'||title==='Динамика дохода'||title==='收入趋势') el.classList.add('np-trend-card');
+      if(seen.has(el)){safeShow(el);return;}
+      if(visibleNow(el)){
+        // If already on screen at setup, still defer to the next frame so the user sees the entry motion.
+        el.classList.add('np5-reveal-pending');
+        requestAnimationFrame(()=>reveal(el));
+      }else{
+        el.classList.add('np5-reveal-pending');
+        io.observe(el);
+      }
+    });
+    root.querySelectorAll?.('.money-flow-card').forEach(el=>{
+      flowDots(el);
+      if(visibleNow(el)) requestAnimationFrame(()=>animateFlow(el)); else io.observe(el);
+    });
+    root.querySelectorAll?.('.np-trend-card').forEach(el=>{
+      if(visibleNow(el)) requestAnimationFrame(()=>animateTrend(el)); else io.observe(el);
+    });
+
+    // Hard fallback: no content can remain hidden if browser suspends an animation frame.
+    setTimeout(()=>root.querySelectorAll?.('.np5-reveal-pending').forEach(safeShow),1800);
+  }
+
+  function schedule(){clearTimeout(moTimer);moTimer=setTimeout(()=>arm(document),90)}
+  arm(document);
+  const app=document.getElementById('app')||document.body;
+  new MutationObserver(schedule).observe(app,{childList:true,subtree:true});
+  window.addEventListener('pageshow',schedule);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule()});
+})();
+</script>
