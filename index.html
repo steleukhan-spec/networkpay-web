@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>NetworkPay — Executive Pro v7.1 Mobile</title>
+<title>NetworkPay — Executive Pro v7.3.1 GitHub Mobile Dock</title>
 <style>
 :root{
   --bg:#0b0d12; --text:#f7f9fc; --muted:#9aa4b5; --soft:#c9d2e0;
@@ -845,25 +845,25 @@ setTimeout(()=>{if(state){renderAll();}},900);
 </body>
 </html>
 <style>
-/* v7.2.2 — mobile safe area + native AI/support sheets */
+/* v7.3.1 — GitHub Pages mobile dock + native AI/support sheets */
 @media (max-width:700px){
-  :root{--np-mobile-safe:64px;--np-nav-h:72px}
-  body{padding-bottom:calc(var(--np-mobile-safe) + env(safe-area-inset-bottom))}
-  .content{padding-bottom:calc(150px + var(--np-mobile-safe) + env(safe-area-inset-bottom))!important}
+  :root{--np-mobile-safe:0px;--np-nav-h:72px}
+  body{padding-bottom:env(safe-area-inset-bottom)}
+  .content{padding-bottom:calc(var(--np-nav-h) + 28px + env(safe-area-inset-bottom))!important}
 
-  /* Reserve a clean strip above provider/deploy badges. */
+  /* GitHub Pages has no provider badge: dock navigation directly to the device safe area. */
   .mobile-nav{
-    bottom:calc(var(--np-mobile-safe) + env(safe-area-inset-bottom))!important;
-    height:var(--np-nav-h)!important;
-    padding-bottom:6px!important;
+    bottom:0!important;
+    height:calc(var(--np-nav-h) + env(safe-area-inset-bottom))!important;
+    padding:4px 4px calc(6px + env(safe-area-inset-bottom))!important;
     border-radius:18px 18px 0 0;
     box-shadow:0 -12px 34px rgba(0,0,0,.40);
   }
 
-  /* Keep assistant buttons clearly above the mobile nav. */
+  /* Keep assistant buttons just above the dock, without the old Netlify gap. */
   .assist-launcher{
     right:12px!important;
-    bottom:calc(var(--np-mobile-safe) + var(--np-nav-h) + 20px + env(safe-area-inset-bottom))!important;
+    bottom:calc(var(--np-nav-h) + 14px + env(safe-area-inset-bottom))!important;
     transform:none!important;
     gap:8px!important;
   }
@@ -876,7 +876,7 @@ setTimeout(()=>{if(state){renderAll();}},900);
     left:8px!important;
     right:8px!important;
     width:auto!important;
-    bottom:calc(var(--np-mobile-safe) + var(--np-nav-h) + 12px + env(safe-area-inset-bottom))!important;
+    bottom:calc(var(--np-nav-h) + 10px + env(safe-area-inset-bottom))!important;
     height:auto!important;
     max-height:min(68dvh,610px)!important;
     border-radius:26px!important;
@@ -915,7 +915,7 @@ setTimeout(()=>{if(state){renderAll();}},900);
 }
 
 @media (max-width:420px){
-  :root{--np-mobile-safe:68px;--np-nav-h:70px}
+  :root{--np-mobile-safe:0px;--np-nav-h:70px}
   .assist-panel{left:7px!important;right:7px!important;max-height:64dvh!important;border-radius:24px!important}
   .assist-launcher{right:10px!important}
 }
