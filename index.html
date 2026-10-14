@@ -920,3 +920,92 @@ setTimeout(()=>{if(state){renderAll();}},900);
   .assist-launcher{right:10px!important}
 }
 </style>
+
+
+<style id="np-v7-3-2-flow-ai-fix">
+/* v7.3.2 — reliable money-flow motion + visually separated AI/support workspace */
+.money-flow-card .flow-arrow{
+  background:linear-gradient(180deg,rgba(108,181,255,.24),rgba(113,241,187,.72),rgba(108,181,255,.24))!important;
+  box-shadow:0 0 18px rgba(113,241,187,.10);
+}
+.money-flow-card .flow-arrow::before{
+  content:"";position:absolute;inset:-4px;border-radius:999px;
+  background:linear-gradient(180deg,transparent,rgba(113,241,187,.32),transparent);
+  opacity:.65;animation:npFlowLinePulse 2.4s ease-in-out infinite;pointer-events:none;
+}
+.money-flow-card .flow-arrow::after{
+  display:block!important;opacity:1!important;animation:npFlowDotVStable 2.4s cubic-bezier(.45,0,.55,1) infinite!important;
+  will-change:top,opacity,transform;transform:translate(-50%,-50%) translateZ(0)!important;
+}
+.money-flow-card .flow-arrow:nth-of-type(4)::after{animation-delay:1.15s!important}
+.money-flow-card .flow-node::after{animation:npSheenStable 3.6s ease-in-out infinite!important;will-change:transform}
+@keyframes npFlowLinePulse{0%,100%{opacity:.24}50%{opacity:.9}}
+@keyframes npFlowDotVStable{0%{top:0%;opacity:.18}8%{opacity:1}88%{opacity:1}100%{top:100%;opacity:.18}}
+@keyframes npSheenStable{0%,58%{transform:translateX(-130%)}82%,100%{transform:translateX(130%)}}
+
+/* AI/support gets its own visual layer so it never blends into the product page. */
+#assistBackdrop{position:fixed;inset:0;z-index:68;background:rgba(3,5,10,.62);backdrop-filter:blur(5px) saturate(.82);-webkit-backdrop-filter:blur(5px) saturate(.82);opacity:0;pointer-events:none;transition:opacity .22s ease}
+body.assist-open #assistBackdrop{opacity:1;pointer-events:auto}
+body.assist-open .assist-panel{z-index:72}
+body.assist-open .assist-launcher{z-index:71}
+.assist-panel{
+  border:1px solid rgba(139,125,255,.38)!important;
+  background:radial-gradient(circle at 92% 0%,rgba(101,83,255,.22),transparent 34%),radial-gradient(circle at 8% 100%,rgba(52,211,153,.13),transparent 34%),linear-gradient(180deg,#15172a 0%,#0d111b 72%,#0a0e16 100%)!important;
+  box-shadow:0 38px 110px rgba(0,0,0,.72),0 0 0 1px rgba(124,108,255,.08),0 0 54px rgba(99,82,255,.14)!important;
+}
+.assist-panel::before{content:"";position:absolute;left:18px;right:18px;top:0;height:3px;border-radius:0 0 999px 999px;background:linear-gradient(90deg,#7c6cff,#62b9ff,#63e6b6);box-shadow:0 0 22px rgba(108,181,255,.45);z-index:3}
+.assist-head{background:linear-gradient(90deg,rgba(124,108,255,.12),rgba(98,185,255,.06),transparent)!important}
+.assist-title b{color:#fff}.assist-title span{color:#aeb8d1!important}
+.assist-tab.active{background:linear-gradient(135deg,rgba(124,108,255,.28),rgba(98,185,255,.16))!important;border-color:rgba(139,125,255,.40)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.03)}
+.msg.bot{background:linear-gradient(135deg,rgba(124,108,255,.12),rgba(255,255,255,.055))!important;border-color:rgba(139,125,255,.20)!important}
+.msg.user{background:linear-gradient(135deg,rgba(98,185,255,.24),rgba(99,230,182,.16))!important}
+.assist-compose{background:rgba(7,8,16,.68)!important}
+
+@media(max-width:700px){
+  .money-flow-card .flow-arrow{height:54px!important;width:3px!important;border-radius:999px!important}
+  .money-flow-card .flow-arrow::after{width:13px!important;height:13px!important;box-shadow:0 0 0 5px rgba(113,241,187,.08),0 0 24px rgba(113,241,187,.95)!important}
+  .assist-panel{left:10px!important;right:10px!important;border-radius:28px 28px 20px 20px!important;border-color:rgba(139,125,255,.48)!important}
+  .assist-head{padding-top:16px!important}
+}
+</style>
+<script id="np-v7-3-2-flow-ai-js">
+(function(){
+  // Add a proper backdrop once, then keep it in sync with the assistant state.
+  if(!document.getElementById('assistBackdrop')){
+    const b=document.createElement('div'); b.id='assistBackdrop'; document.body.appendChild(b);
+    b.addEventListener('click',()=>{ try{ closeAssist(); }catch(e){} });
+  }
+  const originalOpen=window.openAssist;
+  const originalClose=window.closeAssist;
+  if(typeof originalOpen==='function'){
+    window.openAssist=function(tab='ai'){
+      document.body.classList.add('assist-open');
+      const r=originalOpen.apply(this,arguments);
+      setTimeout(()=>document.getElementById('assistPanel')?.scrollTo?.({top:0,behavior:'smooth'}),40);
+      return r;
+    };
+  }
+  if(typeof originalClose==='function'){
+    window.closeAssist=function(){
+      document.body.classList.remove('assist-open');
+      return originalClose.apply(this,arguments);
+    };
+  }
+  // Because earlier click handlers resolve the global binding at click time, mirror wrappers to bindings too.
+  try{ openAssist=window.openAssist; closeAssist=window.closeAssist; }catch(e){}
+
+  // Flow animation must not depend on a one-time reveal class. Restart it after renders/language switches/navigation.
+  function ensureFlow(){
+    document.querySelectorAll('.money-flow-card .flow-arrow,.money-flow-card .flow-node').forEach(el=>{
+      el.classList.add('np-flow-in');
+      el.style.animationPlayState='running';
+    });
+  }
+  ensureFlow();
+  const obs=new MutationObserver(()=>requestAnimationFrame(ensureFlow));
+  const root=document.getElementById('app')||document.body;
+  obs.observe(root,{childList:true,subtree:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden) ensureFlow();});
+  window.addEventListener('pageshow',ensureFlow);
+})();
+</script>
