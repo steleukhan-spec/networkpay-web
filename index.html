@@ -1086,3 +1086,151 @@ body.assist-open .assist-launcher{z-index:71}
   new MutationObserver(()=>setTimeout(ensureMobileKpis,80)).observe(document.getElementById('page-home')||document.body,{childList:true,subtree:true});
 })();
 </script>
+
+<style id="np-v7-4-scroll-motion-css">
+/* v7.4 — viewport-driven motion. Animations start when content actually enters view. */
+.page.motion-enter>.page-head,
+.page.motion-enter>.executive-banner,
+.page.motion-enter>.exec-kpi-grid,
+.page.motion-enter>.grid,
+.page.motion-enter>.card{animation:none!important}
+
+.np-scroll-item{will-change:transform,opacity;transition:none!important}
+.np-scroll-item:not(.np-scroll-in){opacity:0!important;transform:translate3d(0,18px,0) scale(.988)!important;animation:none!important}
+.np-scroll-item.np-scroll-in{animation:npScrollReveal .62s cubic-bezier(.2,.82,.22,1) both!important}
+@keyframes npScrollReveal{0%{opacity:0;transform:translate3d(0,18px,0) scale(.988)}72%{opacity:1;transform:translate3d(0,-2px,0) scale(1.002)}100%{opacity:1;transform:none}}
+
+/* Chart is a compact executive signal, not a giant decorative block. */
+.card.np-trend-card{overflow:hidden}
+.card.np-trend-card .chart .bar{transform-origin:bottom;transform:scaleY(0)!important;opacity:.22!important;animation:none!important}
+.card.np-trend-card.np-scroll-active .chart .bar{animation:npScrollBarGrow .78s cubic-bezier(.2,.82,.22,1) forwards!important;animation-delay:var(--np-scroll-delay,0ms)!important}
+@keyframes npScrollBarGrow{0%{transform:scaleY(0);opacity:.18}72%{transform:scaleY(1.035);opacity:1}100%{transform:scaleY(1);opacity:1}}
+
+/* Money flow only runs while the section is visible. This avoids mobile jank. */
+.money-flow-card:not(.np-scroll-active) .flow-arrow::before,
+.money-flow-card:not(.np-scroll-active) .flow-arrow::after,
+.money-flow-card:not(.np-scroll-active) .flow-node::after{animation-play-state:paused!important;opacity:0!important}
+.money-flow-card.np-scroll-active .flow-arrow::before,
+.money-flow-card.np-scroll-active .flow-arrow::after,
+.money-flow-card.np-scroll-active .flow-node::after{animation-play-state:running!important}
+
+@media(max-width:700px){
+  .np-scroll-item:not(.np-scroll-in){transform:translate3d(0,14px,0) scale(.992)!important}
+  .card.np-trend-card{padding:16px!important}
+  .card.np-trend-card .section-title{margin-bottom:8px!important}
+  .card.np-trend-card .chart{height:132px!important;gap:6px!important;padding-top:4px!important}
+  .card.np-trend-card .legend{margin-top:7px!important;font-size:10px!important}
+
+  /* GPU-friendly money dot: transform only, never animating top. */
+  .money-flow-card .flow-arrow{height:46px!important;width:3px!important;overflow:visible!important}
+  .money-flow-card .flow-arrow::after{
+    top:0!important;left:50%!important;
+    transform:translate3d(-50%,-6px,0)!important;
+    animation:npFlowTransformMobile 1.95s cubic-bezier(.4,0,.2,1) infinite!important;
+    will-change:transform,opacity!important;
+  }
+  .money-flow-card .flow-arrow:nth-of-type(4)::after{animation-delay:.9s!important}
+  @keyframes npFlowTransformMobile{
+    0%{transform:translate3d(-50%,-6px,0);opacity:0}
+    12%{opacity:1}
+    86%{opacity:1}
+    100%{transform:translate3d(-50%,40px,0);opacity:0}
+  }
+  .money-flow-card .flow-node::after{animation-duration:3.2s!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+ .np-scroll-item:not(.np-scroll-in){opacity:1!important;transform:none!important}
+ .card.np-trend-card .chart .bar{transform:scaleY(1)!important;opacity:1!important}
+}
+</style>
+<script id="np-v7-4-scroll-motion-js">
+(function(){
+  let revealObserver=null, sectionObserver=null, mutationTimer=0;
+
+  function inViewport(el){
+    const r=el.getBoundingClientRect();
+    return r.bottom>0 && r.top<(window.innerHeight||document.documentElement.clientHeight)*0.94;
+  }
+
+  function setupObservers(){
+    if(revealObserver) revealObserver.disconnect();
+    if(sectionObserver) sectionObserver.disconnect();
+
+    revealObserver=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          const el=entry.target;
+          el.classList.add('np-scroll-in');
+          revealObserver.unobserve(el);
+        }
+      });
+    },{root:null,threshold:.13,rootMargin:'0px 0px -6% 0px'});
+
+    sectionObserver=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        const el=entry.target;
+        if(entry.isIntersecting){
+          el.classList.add('np-scroll-active');
+          if(el.classList.contains('np-trend-card')){
+            el.querySelectorAll('.chart .bar').forEach((bar,i)=>{
+              bar.style.setProperty('--np-scroll-delay',(i*42)+'ms');
+            });
+          }
+        }else if(el.classList.contains('money-flow-card')){
+          // Flow is paused off-screen and resumes when user comes back.
+          el.classList.remove('np-scroll-active');
+        }
+      });
+    },{root:null,threshold:.22,rootMargin:'-4% 0px -8% 0px'});
+  }
+
+  function prepare(root=document){
+    if(!revealObserver || !sectionObserver) setupObservers();
+
+    // Reveal meaningful content at the moment the user scrolls to it.
+    const selector=[
+      '.executive-banner','.exec-kpi','.card:not(.money-flow-card)',
+      '.channel-card','.activity-row','.split-card','.metric-tile','.rail','.notice'
+    ].join(',');
+    root.querySelectorAll?.(selector).forEach(el=>{
+      // Nested rows in an already animated card remain natural; avoid over-animating dense tables.
+      if(el.closest('.modal') && !el.closest('.modal.show')) return;
+      el.classList.remove('np-reveal','np-in');
+      el.style.removeProperty('--np-delay');
+      if(!el.classList.contains('np-scroll-item')) el.classList.add('np-scroll-item');
+      if(inViewport(el)) el.classList.add('np-scroll-in');
+      else if(!el.classList.contains('np-scroll-in')) revealObserver.observe(el);
+    });
+
+    document.querySelectorAll('.money-flow-card').forEach(el=>{
+      sectionObserver.observe(el);
+      if(inViewport(el)) el.classList.add('np-scroll-active');
+    });
+
+    document.querySelectorAll('.card').forEach(card=>{
+      const title=card.querySelector('.section-title')?.textContent?.trim();
+      if(title==='Revenue trend' || title==='Динамика дохода' || title==='收入趋势'){
+        card.classList.add('np-trend-card');
+        card.querySelectorAll('.chart .bar').forEach(bar=>bar.classList.remove('np-bar-in'));
+        sectionObserver.observe(card);
+        if(inViewport(card)) card.classList.add('np-scroll-active');
+      }
+    });
+  }
+
+  function schedulePrepare(){
+    clearTimeout(mutationTimer);
+    mutationTimer=setTimeout(()=>prepare(document),60);
+  }
+
+  setupObservers();
+  prepare(document);
+
+  const app=document.getElementById('app')||document.body;
+  new MutationObserver(schedulePrepare).observe(app,{childList:true,subtree:true});
+  window.addEventListener('pageshow',schedulePrepare);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden) schedulePrepare();});
+  window.addEventListener('resize',schedulePrepare,{passive:true});
+})();
+</script>
