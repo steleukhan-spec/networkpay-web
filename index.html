@@ -1009,3 +1009,80 @@ body.assist-open .assist-launcher{z-index:71}
   window.addEventListener('pageshow',ensureFlow);
 })();
 </script>
+<style id="np-v7-3-3-mobile-stability-css">
+/* v7.3.3 — mobile visibility + assistant backdrop stability */
+@media(max-width:700px){
+  /* Never leave KPI cards invisible if a reveal frame is interrupted by Chrome/mobile rendering. */
+  .exec-kpi.np-reveal{
+    opacity:1!important;
+    transform:none!important;
+  }
+  .exec-kpi.np-reveal.np-in{
+    animation:npMobileKpiIn .56s cubic-bezier(.22,.82,.24,1) both!important;
+    animation-delay:var(--np-delay,0ms)!important;
+  }
+  @keyframes npMobileKpiIn{
+    from{opacity:.18;transform:translateY(12px) scale(.985)}
+    to{opacity:1;transform:none}
+  }
+
+  /* Assistant should read as a separate surface, not as part of the dashboard. */
+  body.assist-open #app,
+  body.assist-open #login{
+    filter:blur(2px) brightness(.55) saturate(.72);
+    transition:filter .18s ease;
+  }
+  body:not(.assist-open) #app,
+  body:not(.assist-open) #login{
+    filter:none!important;
+  }
+  #assistBackdrop{transition:opacity .16s ease!important}
+}
+</style>
+<script id="np-v7-3-3-mobile-stability-js">
+(function(){
+  const panel=document.getElementById('assistPanel');
+  const backdrop=document.getElementById('assistBackdrop');
+  function syncAssistVisualState(){
+    const open=!!panel?.classList.contains('show');
+    document.body.classList.toggle('assist-open',open);
+    if(!open && backdrop){
+      backdrop.style.opacity='';
+      backdrop.style.pointerEvents='';
+    }
+  }
+  if(panel){
+    new MutationObserver(syncAssistVisualState).observe(panel,{attributes:true,attributeFilter:['class']});
+  }
+  document.getElementById('closeAssistBtn')?.addEventListener('click',()=>{
+    panel?.classList.remove('show');
+    document.body.classList.remove('assist-open');
+  },true);
+  backdrop?.addEventListener('click',()=>{
+    panel?.classList.remove('show');
+    document.body.classList.remove('assist-open');
+  },true);
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape' && panel?.classList.contains('show')){
+      panel.classList.remove('show');
+      document.body.classList.remove('assist-open');
+    }
+  });
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden) syncAssistVisualState();
+  });
+  window.addEventListener('pageshow',syncAssistVisualState);
+  syncAssistVisualState();
+
+  /* Safety pass: if mobile card reveal is interrupted, make all KPI cards visible. */
+  function ensureMobileKpis(){
+    if(!matchMedia('(max-width:700px)').matches) return;
+    document.querySelectorAll('.exec-kpi').forEach(el=>{
+      if(getComputedStyle(el).opacity==='0') el.classList.add('np-in');
+    });
+  }
+  setTimeout(ensureMobileKpis,900);
+  setTimeout(ensureMobileKpis,1800);
+  new MutationObserver(()=>setTimeout(ensureMobileKpis,80)).observe(document.getElementById('page-home')||document.body,{childList:true,subtree:true});
+})();
+</script>
