@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NetworkPay — Executive Pro v7.1 Mobile</title>
+<style>
+:root{
+  --bg:#0b0d12; --text:#f7f9fc; --muted:#9aa4b5; --soft:#c9d2e0;
+  --green:#71f1bb; --green-2:#26c98b; --blue:#6cb5ff; --violet:#a075ff; --pink:#ff6fcf; --amber:#ffcc70; --danger:#ff8f99;
+  --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.12); --shadow:0 22px 70px rgba(0,0,0,.45); --glow:0 0 0 1px rgba(255,255,255,.04),0 20px 55px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box} html,body{margin:0;min-height:100%;overflow-x:hidden}
+body{color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(900px 480px at 85% -10%,rgba(108,181,255,.16),transparent 55%),radial-gradient(900px 480px at 10% 10%,rgba(160,117,255,.15),transparent 45%),radial-gradient(700px 380px at 80% 80%,rgba(113,241,187,.10),transparent 48%),linear-gradient(180deg,#0a0d12,#0b0d12 45%,#0d1016 100%)}
+button,input,select{font:inherit} button{cursor:pointer} a{text-decoration:none;color:inherit} .hidden{display:none!important}.muted{color:var(--muted)} .kicker{font-size:11px;line-height:1.2;letter-spacing:1.4px;text-transform:uppercase;color:#95a1b6;font-weight:800}
+.h1{font-size:clamp(34px,4vw,62px);line-height:.96;letter-spacing:-2px;font-weight:900;margin:12px 0 14px}.h2{font-size:26px;line-height:1.05;letter-spacing:-1px;font-weight:850;margin:0}.h3{font-size:18px;line-height:1.2;letter-spacing:-.4px;font-weight:800;margin:0}.p{font-size:15px;line-height:1.7;color:#a9b4c6}.subtle{font-size:12px;color:#8f99ab}
+body:before,body:after{content:"";position:fixed;pointer-events:none;border-radius:50%;filter:blur(60px);opacity:.18;z-index:0} body:before{width:340px;height:340px;left:-40px;top:120px;background:linear-gradient(135deg,var(--violet),var(--pink));animation:floatA 10s ease-in-out infinite} body:after{width:280px;height:280px;right:10px;bottom:80px;background:linear-gradient(135deg,var(--blue),var(--green));animation:floatB 12s ease-in-out infinite} @keyframes floatA{50%{transform:translate(30px,-18px)}} @keyframes floatB{50%{transform:translate(-20px,25px)}}
+#loader{position:fixed;inset:0;z-index:999;background:rgba(8,10,14,.88);backdrop-filter:blur(18px);display:grid;place-items:center;transition:.45s opacity,.45s visibility} #loader.done{opacity:0;visibility:hidden}.loader-box{text-align:center}.logo-mark-lg{width:108px;height:108px;margin:auto;border-radius:32px;background:linear-gradient(145deg,#161d28,#0c1016);border:1px solid rgba(255,255,255,.07);box-shadow:var(--shadow);position:relative;overflow:hidden}.logo-mark-lg svg{position:absolute;inset:0;width:100%;height:100%}.logo-flood{position:absolute;inset:auto 0 0 0;height:4%;background:linear-gradient(90deg,var(--violet),var(--blue),var(--green),var(--amber));animation:fill 4.8s cubic-bezier(.18,.72,.18,1) forwards}@keyframes fill{to{height:102%}}.loader-title{font-size:28px;font-weight:900;letter-spacing:-.8px;margin-top:18px}.loader-sub{font-size:12px;color:#9aa4b5;margin-top:6px}
+#login{position:relative;z-index:1;min-height:100vh;display:grid;grid-template-columns:1.15fr .85fr}.left-pane{padding:44px 48px 40px 52px;display:flex;flex-direction:column;justify-content:space-between}.top-brand{display:flex;align-items:center;gap:14px}.brand-copy b{display:block;font-size:22px;letter-spacing:-.5px}.brand-copy span{display:block;color:#8b97aa;font-size:12px;margin-top:2px}.logo-mark{width:52px;height:52px;border-radius:18px;background:linear-gradient(145deg,rgba(113,241,187,.18),rgba(108,181,255,.1));backdrop-filter:blur(16px);display:grid;place-items:center;border:1px solid rgba(255,255,255,.08);box-shadow:var(--glow)}.logo-mark svg{width:36px;height:36px}.hero-wrap{max-width:760px;padding:25px 0}.hero-badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}.badge-chip{padding:10px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);font-size:12px;font-weight:700;color:#c8d2df;backdrop-filter:blur(8px)}.mini-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:24px;max-width:720px}.mini-card{border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));border-radius:22px;padding:18px;box-shadow:var(--glow);min-height:128px;transition:transform .25s ease, box-shadow .25s ease}.mini-card:hover{transform:translateY(-3px);box-shadow:0 28px 70px rgba(0,0,0,.42)}.mini-card .v{font-size:26px;font-weight:900;letter-spacing:-1px;margin:8px 0 4px}.mini-card .k{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#8e9aad;font-weight:800}
+.right-pane{display:grid;place-items:center;padding:36px}.login-card{width:min(470px,100%);padding:28px;border-radius:30px;background:linear-gradient(180deg,rgba(18,23,32,.94),rgba(14,18,25,.92));border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);backdrop-filter:blur(18px)}.login-card h2{font-size:34px;line-height:1.02;margin:10px 0 6px;letter-spacing:-1.3px}.field{margin-top:16px}.field label{display:block;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#8f9bad;margin-bottom:8px}.input{width:100%;min-height:56px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);color:var(--text);padding:15px 16px;border-radius:18px;outline:none;transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease}.input:focus{border-color:rgba(113,241,187,.5);box-shadow:0 0 0 4px rgba(113,241,187,.08);transform:translateY(-1px)}
+.btn{appearance:none;border:0;min-height:50px;padding:12px 16px;border-radius:16px;font-size:14px;font-weight:900;color:var(--text);transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease, filter .18s ease, background .18s ease;position:relative;overflow:hidden}.btn:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 0%,rgba(255,255,255,.12) 50%,transparent 100%);transform:translateX(-120%);transition:transform .55s ease}.btn:hover:before{transform:translateX(120%)}.btn:hover{transform:translateY(-2px);filter:brightness(1.04)}.btn:active{transform:translateY(0) scale(.985)}.btn.primary{background:linear-gradient(135deg,var(--green-2),var(--green));color:#07110d;box-shadow:0 16px 40px rgba(38,201,139,.28)}.btn.secondary{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10)}.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.10)}.btn.warn{background:linear-gradient(135deg,#ff8c8c,#ff7aa0);color:#22070d;box-shadow:0 16px 40px rgba(255,120,148,.2)}.btn.small{min-height:42px;padding:10px 13px;border-radius:14px;font-size:12px}.btn.full{width:100%;margin-top:18px}.btn.loading{pointer-events:none;color:transparent!important}.btn.loading::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.login-hint{margin-top:14px;font-size:12px;color:#8e9aac;line-height:1.55}
+#app{position:relative;z-index:1;min-height:100vh;display:grid;grid-template-columns:260px 1fr}.sidebar{position:sticky;top:0;height:100vh;padding:18px;background:linear-gradient(180deg,rgba(12,15,21,.95),rgba(12,15,21,.86));border-right:1px solid var(--line);backdrop-filter:blur(18px)}.side-box{height:100%;display:flex;flex-direction:column}.side-title{display:flex;align-items:center;gap:14px;padding:8px 8px 18px}.side-meta{font-size:12px;color:#8e99aa;margin-top:2px}.nav{display:grid;gap:8px;padding-top:10px}.nav-btn{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:12px 14px;border:1px solid transparent;border-radius:18px;background:transparent;color:#d0d8e4;font-weight:800;text-align:left;transition:transform .16s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease, color .18s ease}.nav-btn svg{width:22px;height:22px;opacity:.9}.nav-btn:hover{transform:translateX(3px);background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}.nav-btn.active{background:linear-gradient(180deg,rgba(108,181,255,.14),rgba(113,241,187,.10));border-color:rgba(113,241,187,.18);box-shadow:inset 0 0 0 1px rgba(255,255,255,.04),0 18px 30px rgba(0,0,0,.18);color:#fff}.api-box{margin-top:auto;padding:16px;border-radius:22px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.02))}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green-2));box-shadow:0 0 0 6px rgba(38,201,139,.08)}
+.main{min-width:0}.topbar{position:sticky;top:0;z-index:20;height:78px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;border-bottom:1px solid var(--line);background:rgba(10,13,18,.74);backdrop-filter:blur(18px)}.top-title strong{display:block;font-size:19px;letter-spacing:-.4px}.top-title span{display:block;font-size:12px;color:#93a0b2;margin-top:4px}.top-actions{display:flex;align-items:center;gap:10px}.avatar-photo{width:44px;height:44px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:linear-gradient(145deg,rgba(108,181,255,.16),rgba(113,241,187,.12));display:grid;place-items:center;box-shadow:var(--glow);transition:transform .18s ease, box-shadow .18s ease}.avatar-photo:hover{transform:translateY(-2px) scale(1.02)}.avatar-photo svg{width:100%;height:100%}
+.content{padding:26px;max-width:1540px;margin:auto}.page{display:none;animation:fadeIn .25s ease}.page.active{display:block}@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:18px}.page-head p{margin:6px 0 0;color:#97a3b4;font-size:14px}.pill{display:inline-flex;align-items:center;gap:8px;min-height:34px;padding:7px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.7px}.pill.success{background:rgba(38,201,139,.12);border-color:rgba(113,241,187,.18);color:#8df8c6}.pill.warning{background:rgba(255,204,112,.10);border-color:rgba(255,204,112,.18);color:#ffd792}.pill.info{background:rgba(108,181,255,.1);border-color:rgba(108,181,255,.18);color:#a8d1ff}
+.grid{display:grid;gap:16px}.grid.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}.grid.two{grid-template-columns:minmax(0,1.2fr) minmax(360px,.8fr)}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.card{position:relative;padding:18px;border-radius:26px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(21,26,35,.95),rgba(18,22,31,.95));box-shadow:var(--glow);min-width:0}.card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.05),transparent 28%);opacity:.5}.card.clickable{cursor:pointer;transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease}.card.clickable:hover{transform:translateY(-3px);border-color:rgba(108,181,255,.18);box-shadow:0 34px 70px rgba(0,0,0,.42)}.card.clickable:active{transform:scale(.99)}.kpi .label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#95a0b3;font-weight:850}.kpi .value,.split-number{font-size:clamp(30px,2.8vw,50px);line-height:.98;font-weight:900;letter-spacing:-1.6px;margin-top:10px;overflow-wrap:anywhere;word-break:break-word;max-width:100%}.kpi .meta{font-size:12px;color:#8c98ab;margin-top:9px;line-height:1.4}.section-title{font-size:20px;font-weight:850;letter-spacing:-.4px;margin-bottom:14px}
+.chart{height:260px;display:flex;align-items:flex-end;gap:12px;padding-top:18px}.bar{flex:1;min-width:18px;border-radius:14px 14px 4px 4px;background:linear-gradient(180deg,rgba(160,117,255,.95),rgba(108,181,255,.9) 45%,rgba(113,241,187,.85));box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 10px 25px rgba(108,181,255,.12);transition:transform .18s ease, filter .18s ease}.bar:hover{transform:translateY(-4px);filter:brightness(1.08)}.legend{display:flex;justify-content:space-between;color:#95a0b3;font-size:11px;margin-top:10px}
+.activity{display:grid}.activity-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.06)}.activity-row:last-child{border-bottom:0}.activity-title{font-size:14px;font-weight:820;line-height:1.35}.activity-time{margin-top:6px;font-size:11px;color:#8c97a8;line-height:1.5}.activity-amount{font-size:14px;font-weight:900;white-space:nowrap;text-align:right}
+.table-wrap{overflow:auto;border:1px solid rgba(255,255,255,.08);border-radius:22px;background:rgba(255,255,255,.02)}.table{width:100%;min-width:780px;border-collapse:collapse}.table th,.table td{padding:15px 16px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}.table th{font-size:11px;letter-spacing:.7px;text-transform:uppercase;color:#8f9cb0;background:rgba(255,255,255,.02)}.table td{font-size:13px;color:#e9eef6}.table tr:hover td{background:rgba(255,255,255,.02)}.table tr:last-child td{border-bottom:0}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}.chip{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);padding:10px 12px;border-radius:999px;color:#d1d9e5;font-size:12px;font-weight:850;transition:.18s}.chip:hover{transform:translateY(-2px)}.chip.active{background:linear-gradient(180deg,rgba(108,181,255,.18),rgba(160,117,255,.15));border-color:rgba(160,117,255,.25)}.search{width:min(360px,100%)}
+.channel-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.channel-card{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:14px;align-items:center;padding:16px;border-radius:22px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));cursor:pointer;transition:.18s}.channel-card:hover{transform:translateY(-3px);box-shadow:0 28px 60px rgba(0,0,0,.34);border-color:rgba(113,241,187,.18)}.channel-card:active{transform:scale(.99)}.channel-logo{width:84px;height:84px;border-radius:24px;display:grid;place-items:center;position:relative;overflow:hidden;box-shadow:0 14px 35px rgba(0,0,0,.28)}.channel-logo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.18),transparent 35%)}.channel-logo svg{width:54px;height:54px;position:relative;z-index:1}.channel-name{font-size:15px;font-weight:850;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.channel-sub{font-size:11px;color:#96a1b2;margin-top:4px;line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.channel-rev{text-align:right;white-space:nowrap}.channel-rev b{display:block;font-size:15px}.channel-rev span{display:block;margin-top:4px;color:#9ca7b8;font-size:10px}
+.rails{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.rail{padding:16px;min-height:132px;border-radius:24px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.18s}.rail:hover{transform:translateY(-4px);border-color:rgba(108,181,255,.22);box-shadow:0 28px 60px rgba(0,0,0,.34)}.rail-logo{display:flex;align-items:center;gap:10px;height:34px}.rail-copy b{display:block;font-size:14px}.rail-copy span{display:block;font-size:11px;color:#94a0b1;margin-top:4px;line-height:1.45}.visa{font-weight:900;font-style:italic;letter-spacing:-1px;font-size:24px;color:#2a6fff}.mc{display:flex;align-items:center}.mc i{display:block;width:24px;height:24px;border-radius:50%}.mc i:first-child{background:#eb001b}.mc i:last-child{background:#f79e1b;margin-left:-8px;mix-blend-mode:screen}.paypal{font-size:21px;font-weight:900;color:#179bd7;letter-spacing:-.4px}.usdt{font-size:19px;font-weight:900;color:#26a17b}
+.entity-list{display:grid;gap:12px}.entity{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px;border-radius:20px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03)}.entity-icon{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(160,117,255,.18),rgba(108,181,255,.12));border:1px solid rgba(255,255,255,.08)}.entity-title{font-size:15px;font-weight:850}.entity-sub{font-size:11px;color:#95a0b2;margin-top:4px}
+.user-grid{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;align-items:center}.user-photo{width:138px;height:138px;border-radius:34px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:linear-gradient(145deg,rgba(255,255,255,.05),rgba(255,255,255,.03))}.user-photo svg{width:100%;height:100%}.user-stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.user-stat{min-width:118px;padding:12px 14px;border-radius:16px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}.user-stat b{display:block;font-size:18px}.user-stat span{display:block;margin-top:4px;font-size:10px;color:#94a0b1}.row-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.profile-list{display:grid}.profile-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.06)}.profile-row:last-child{border-bottom:0}.profile-key{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:#8f9aad}.profile-value{font-size:14px;font-weight:800;margin-top:4px;line-height:1.5;word-break:break-word}
+.split-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}.split-card{padding:16px;border-radius:22px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));min-width:0}.split-card .title{font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:#94a0b1;font-weight:850}.split-card .amount{font-size:clamp(24px,2.2vw,42px);line-height:1;font-weight:900;letter-spacing:-1.2px;margin-top:10px;overflow-wrap:anywhere}.split-card .desc{font-size:12px;color:#91a0b2;margin-top:8px;line-height:1.4}.progress-stack{margin-top:16px;padding:14px;border:1px solid rgba(255,255,255,.08);border-radius:22px;background:rgba(255,255,255,.03)}.stack-bar{display:flex;height:16px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.06)}.seg{height:100%}.seg.creator{background:linear-gradient(90deg,#71f1bb,#3ccf8d)}.seg.mcn{background:linear-gradient(90deg,#6cb5ff,#4a8ef6)}.seg.platform{background:linear-gradient(90deg,#ffcc70,#ff9f45)}.stack-legend{display:grid;gap:10px;margin-top:12px}.legend-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px}.legend-chip{width:12px;height:12px;border-radius:50%}
+
+.custom-picker{position:relative;width:100%}
+.picker-trigger{width:100%;min-height:56px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);color:var(--text);padding:10px 14px;border-radius:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease,background .18s ease}
+.picker-trigger:hover{border-color:rgba(113,241,187,.32);background:rgba(255,255,255,.055);transform:translateY(-1px)}
+.picker-trigger.open{border-color:rgba(113,241,187,.5);box-shadow:0 0 0 4px rgba(113,241,187,.08)}
+.picker-current{display:flex;align-items:center;gap:11px;min-width:0;font-weight:850}
+.picker-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:0 0 auto;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);font-size:16px;line-height:1}
+.picker-chevron{font-size:14px;color:#91a0b2;transition:transform .18s ease}.picker-trigger.open .picker-chevron{transform:rotate(180deg)}
+.picker-menu{position:absolute;z-index:120;left:0;right:0;top:calc(100% + 8px);padding:8px;border-radius:18px;border:1px solid rgba(255,255,255,.10);background:linear-gradient(180deg,#171c25,#11161f);box-shadow:0 28px 70px rgba(0,0,0,.55);display:none;max-height:320px;overflow:auto}
+.picker-menu.show{display:grid;gap:5px;animation:pickerIn .16s ease}@keyframes pickerIn{from{opacity:0;transform:translateY(-5px) scale(.985)}to{opacity:1;transform:none}}
+.picker-option{appearance:none;border:1px solid transparent;background:transparent;color:#ecf2fa;width:100%;min-height:48px;border-radius:13px;padding:8px 10px;display:flex;align-items:center;gap:11px;text-align:left;font-weight:800;transition:background .14s ease,border-color .14s ease,transform .14s ease}
+.picker-option:hover{background:rgba(108,181,255,.10);border-color:rgba(108,181,255,.14);transform:translateX(2px)}
+.picker-option.selected{background:linear-gradient(90deg,rgba(113,241,187,.14),rgba(108,181,255,.10));border-color:rgba(113,241,187,.18)}
+.picker-option .meta{margin-left:auto;color:#8290a3;font-size:10px;font-weight:700}
+.pay-brand{font-weight:950;letter-spacing:-.5px}.pay-visa{color:#6ea8ff;font-style:italic}.pay-paypal{color:#48b3f1}.pay-usdt{color:#50d7ae}.pay-bank{color:#c8d2df}
+.currency-usd{background:linear-gradient(145deg,#274c77,#3f7cae)}.currency-eur{background:linear-gradient(145deg,#3446bd,#5f6df1)}.currency-cny{background:linear-gradient(145deg,#c53643,#ef5963)}.currency-gbp{background:linear-gradient(145deg,#4f3e9e,#8a75dc)}.currency-krw{background:linear-gradient(145deg,#4777ba,#ed626d)}.currency-jpy{background:linear-gradient(145deg,#5b6577,#8e9aaa)}
+
+.share-control{margin-top:18px;padding:16px;border:1px solid rgba(255,255,255,.08);border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.025))}
+.share-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}.share-head b{display:block;font-size:15px}.share-head span{display:block;font-size:11px;color:#94a0b1;margin-top:5px;line-height:1.45}.share-value{min-width:74px;text-align:center;padding:9px 12px;border-radius:14px;background:rgba(108,181,255,.12);border:1px solid rgba(108,181,255,.22);font-size:20px;font-weight:900;color:#b8dcff}
+.share-slider{appearance:none;width:100%;height:10px;border-radius:999px;outline:none;background:linear-gradient(90deg,#6cb5ff 0 var(--mcn-pct,30%),rgba(255,255,255,.08) var(--mcn-pct,30%) 100%)}
+.share-slider::-webkit-slider-thumb{appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:4px solid #6cb5ff;box-shadow:0 6px 20px rgba(108,181,255,.35);cursor:pointer;transition:transform .15s ease}.share-slider::-webkit-slider-thumb:hover{transform:scale(1.08)}
+.share-slider::-moz-range-thumb{width:17px;height:17px;border-radius:50%;background:#fff;border:4px solid #6cb5ff;box-shadow:0 6px 20px rgba(108,181,255,.35);cursor:pointer}
+.share-scale{display:flex;justify-content:space-between;margin-top:7px;color:#7f8b9c;font-size:10px}.preset-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.preset-btn{appearance:none;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.035);color:#cdd5e2;min-width:54px;padding:9px 11px;border-radius:999px;font-size:11px;font-weight:850;transition:.16s}.preset-btn:hover{transform:translateY(-2px);border-color:rgba(108,181,255,.28)}.preset-btn.active{background:rgba(108,181,255,.16);border-color:rgba(108,181,255,.32);color:#fff}
+.platform-lock{display:flex;align-items:center;gap:10px;margin-top:13px;padding:11px 12px;border-radius:16px;background:rgba(255,204,112,.07);border:1px solid rgba(255,204,112,.15);font-size:11px;color:#d6c291}.lock-icon{width:26px;height:26px;border-radius:10px;background:rgba(255,204,112,.12);display:grid;place-items:center;font-size:13px}.creator-live{margin-top:12px;display:flex;justify-content:space-between;gap:10px;font-size:12px;color:#9ca8b8}.creator-live b{color:#8df8c6;font-size:14px}
+.modal{position:fixed;inset:0;z-index:70;background:rgba(4,6,10,.64);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:16px}.modal.show{display:flex}.modal-card{width:min(980px,100%);max-height:min(92vh,1000px);overflow:auto;padding:22px;border-radius:28px;border:1px solid rgba(255,255,255,.10);background:linear-gradient(180deg,rgba(19,24,34,.97),rgba(13,17,24,.96));box-shadow:var(--shadow)}.modal-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:12px}.modal-head h3{font-size:32px;letter-spacing:-.9px;margin:6px 0 0}.row{display:flex;gap:10px}.row>*{flex:1}
+.toast-wrap{position:fixed;right:18px;top:92px;z-index:80;display:grid;gap:10px;pointer-events:none;width:min(380px,calc(100vw - 36px))}.toast{display:grid;grid-template-columns:38px minmax(0,1fr);gap:11px;padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(20,25,35,.97),rgba(14,18,25,.97));box-shadow:var(--shadow);animation:toastIn .22s ease}.toast-icon{width:38px;height:38px;border-radius:14px;display:grid;place-items:center;background:rgba(113,241,187,.14);color:#8ff9c8;font-weight:900}.toast.err .toast-icon{background:rgba(255,143,153,.16);color:#ffadb5}.toast b{font-size:13px}.toast p{font-size:11px;color:#98a3b5;margin:4px 0 0;line-height:1.45}@keyframes toastIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+/* v6 executive polish */
+.nav-btn{position:relative;overflow:hidden}
+.nav-btn .nav-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:11px;flex:0 0 auto;transition:transform .2s ease,filter .2s ease,box-shadow .2s ease}
+.nav-btn .nav-icon svg{width:19px;height:19px;opacity:1}
+.nav-btn[data-target="home"] .nav-icon{color:#8df8c6;background:rgba(38,201,139,.13)}
+.nav-btn[data-target="revenue"] .nav-icon{color:#9ed3ff;background:rgba(108,181,255,.13)}
+.nav-btn[data-target="wallet"] .nav-icon{color:#ffd98d;background:rgba(255,204,112,.13)}
+.nav-btn[data-target="network"] .nav-icon{color:#c2aaff;background:rgba(160,117,255,.14)}
+.nav-btn[data-target="admin"] .nav-icon{color:#ff9cc9;background:rgba(255,111,207,.13)}
+.nav-btn[data-target="profile"] .nav-icon{color:#b8f4ff;background:rgba(69,210,255,.12)}
+.nav-btn:hover .nav-icon{transform:scale(1.08) rotate(-3deg);filter:brightness(1.15)}
+.nav-btn.active .nav-icon{box-shadow:0 10px 24px rgba(0,0,0,.24),0 0 0 1px rgba(255,255,255,.08) inset}
+.nav-btn.active:after{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:99px;background:linear-gradient(180deg,var(--green),var(--blue),var(--violet));box-shadow:0 0 18px rgba(108,181,255,.7)}
+.mobile-nav .nav-icon{display:grid;place-items:center}.mobile-nav .nav-icon svg{width:23px;height:23px}
+
+.network-stage{display:grid;grid-template-columns:1.25fr .75fr;gap:16px}
+.entity.interactive{cursor:pointer;position:relative;overflow:hidden;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease}
+.entity.interactive:before{content:"";position:absolute;inset:-1px;background:linear-gradient(110deg,transparent 0%,rgba(255,255,255,.08) 44%,transparent 60%);transform:translateX(-120%);transition:transform .65s ease;pointer-events:none}
+.entity.interactive:hover:before{transform:translateX(120%)}
+.entity.interactive:hover{transform:translateY(-3px);border-color:rgba(108,181,255,.2);background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.032));box-shadow:0 24px 58px rgba(0,0,0,.30)}
+.entity-arrow{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);transition:transform .2s ease,background .2s ease}
+.entity.interactive:hover .entity-arrow{transform:translateX(4px);background:rgba(108,181,255,.10)}
+.entity-icon.v6{overflow:hidden;position:relative;background:#111722}.entity-icon.v6 svg{width:100%;height:100%}.entity-icon.v6:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.16),transparent 38%);pointer-events:none}
+.entity-status{display:flex;align-items:center;gap:10px}.pulse{width:9px;height:9px;border-radius:50%;background:#67f0b5;box-shadow:0 0 0 0 rgba(103,240,181,.45);animation:pulseRing 1.8s infinite}@keyframes pulseRing{70%{box-shadow:0 0 0 8px rgba(103,240,181,0)}100%{box-shadow:0 0 0 0 rgba(103,240,181,0)}}
+.flow-card{min-height:100%;display:flex;flex-direction:column}.flow{display:grid;gap:12px;margin-top:10px}.flow-node{display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:12px;align-items:center;padding:13px;border-radius:18px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);position:relative;transition:.18s}.flow-node:hover{transform:translateX(3px);background:rgba(255,255,255,.045)}.flow-node:not(:last-child):after{content:"";position:absolute;left:35px;bottom:-13px;width:2px;height:13px;background:linear-gradient(var(--blue),var(--green));opacity:.7}.flow-ico{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;font-weight:900}.flow-node:nth-child(1) .flow-ico{background:rgba(255,83,83,.13);color:#ff8d8d}.flow-node:nth-child(2) .flow-ico{background:rgba(108,181,255,.13);color:#9ed3ff}.flow-node:nth-child(3) .flow-ico{background:rgba(160,117,255,.13);color:#c5b0ff}.flow-node:nth-child(4) .flow-ico{background:rgba(113,241,187,.13);color:#8df8c6}.flow-title{font-size:13px;font-weight:850}.flow-sub{font-size:10px;color:#8f9bad;margin-top:3px}.flow-badge{font-size:10px;font-weight:850;color:#8df8c6}
+.exec-note{margin-top:auto;padding:14px;border-radius:18px;background:linear-gradient(135deg,rgba(108,181,255,.08),rgba(160,117,255,.08));border:1px solid rgba(108,181,255,.11);font-size:11px;line-height:1.55;color:#aeb8c8}
+
+.entity-modal-hero{display:grid;grid-template-columns:90px minmax(0,1fr) auto;gap:18px;align-items:center;padding:18px;border-radius:24px;background:linear-gradient(135deg,rgba(108,181,255,.08),rgba(160,117,255,.08));border:1px solid rgba(255,255,255,.08);margin-bottom:16px}.entity-modal-logo{width:90px;height:90px;border-radius:24px;overflow:hidden}.entity-modal-logo svg{width:100%;height:100%}.metric-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.metric-mini{padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03)}.metric-mini span{display:block;font-size:10px;color:#8f9bad;text-transform:uppercase;letter-spacing:.8px;font-weight:800}.metric-mini b{display:block;font-size:22px;margin-top:7px;letter-spacing:-.6px;overflow-wrap:anywhere}
+
+/* brand mark: three payment rails converging into one settlement point */
+.brandflow{width:100%;height:100%;display:grid;place-items:center}
+.brandflow svg{width:74%;height:74%}.brandflow .r1,.brandflow .r2,.brandflow .r3{fill:none;stroke-linecap:round;stroke-width:12}.brandflow .r1{stroke:#a075ff}.brandflow .r2{stroke:#6cb5ff}.brandflow .r3{stroke:#71f1bb}.brandflow .hub{fill:#fff}.brandflow .orbit{fill:none;stroke:rgba(255,255,255,.22);stroke-width:3;stroke-dasharray:7 9;animation:orbit 8s linear infinite;transform-origin:60px 60px}@keyframes orbit{to{transform:rotate(360deg)}}
+@media(max-width:1180px){.network-stage{grid-template-columns:1fr}.metric-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.entity-modal-hero{grid-template-columns:70px minmax(0,1fr)}.entity-modal-logo{width:70px;height:70px}.entity-modal-hero>.pill{grid-column:2}.metric-strip{grid-template-columns:1fr 1fr}}
+
+.mobile-nav{display:none}
+@media (max-width:1180px){.grid.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.two,.grid.three,.split-grid{grid-template-columns:1fr}.channel-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.rails{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:980px){#login{grid-template-columns:1fr}.left-pane{display:none}#app{grid-template-columns:1fr}.sidebar{display:none}.content{padding:18px 14px 90px}.topbar{padding:0 14px 0 16px;height:70px}.mobile-nav{display:grid;position:fixed;left:0;right:0;bottom:0;z-index:60;height:78px;padding-bottom:env(safe-area-inset-bottom);grid-template-columns:repeat(5,1fr);background:rgba(10,13,18,.9);backdrop-filter:blur(18px);border-top:1px solid var(--line)}.mobile-nav button{appearance:none;border:0;background:transparent;color:#99a4b5;display:grid;place-items:center;gap:3px;font-size:9px;font-weight:900}.mobile-nav svg{width:24px;height:24px}.mobile-nav button.active{color:#fff}}
+@media (max-width:700px){.channel-grid,.grid.three{grid-template-columns:1fr}.grid.kpis{grid-template-columns:1fr 1fr}.rails{grid-template-columns:1fr 1fr}.channel-card{grid-template-columns:74px minmax(0,1fr)}.channel-logo{width:74px;height:74px;border-radius:20px}.channel-rev{grid-column:2;text-align:left}.user-grid{grid-template-columns:96px 1fr}.user-photo{width:92px;height:92px;border-radius:24px}.activity-row{grid-template-columns:1fr}.activity-amount{text-align:left}.page-head{flex-direction:column;align-items:flex-start}.h1{font-size:32px}}
+
+
+/* v6.2 AI assistant + technical support */
+.assist-launcher{position:fixed;right:24px;bottom:24px;z-index:68;display:flex;align-items:center;gap:10px}
+.assist-mini{width:48px;height:48px;border-radius:16px;border:1px solid rgba(255,255,255,.1);background:rgba(18,23,32,.92);backdrop-filter:blur(18px);color:#dce6f5;display:grid;place-items:center;box-shadow:var(--shadow);transition:.18s;position:relative}
+.assist-mini:hover{transform:translateY(-3px) scale(1.03);border-color:rgba(108,181,255,.28);box-shadow:0 24px 60px rgba(0,0,0,.48),0 0 34px rgba(108,181,255,.12)}
+.assist-orb{height:56px;padding:0 18px 0 10px;border-radius:20px;border:1px solid rgba(113,241,187,.2);background:linear-gradient(135deg,rgba(108,181,255,.16),rgba(113,241,187,.14)),rgba(16,21,29,.94);backdrop-filter:blur(18px);color:#fff;display:flex;align-items:center;gap:10px;font-weight:900;box-shadow:0 20px 55px rgba(0,0,0,.46),0 0 40px rgba(113,241,187,.08);transition:.18s;position:relative;overflow:hidden}
+.assist-orb:before{content:"";position:absolute;inset:-50%;background:conic-gradient(from 180deg,transparent,rgba(113,241,187,.25),rgba(108,181,255,.2),transparent 35%);animation:aiOrbit 5s linear infinite}
+.assist-orb>*{position:relative;z-index:1}.assist-orb:hover{transform:translateY(-3px);box-shadow:0 28px 72px rgba(0,0,0,.52),0 0 48px rgba(113,241,187,.15)}
+@keyframes aiOrbit{to{transform:rotate(360deg)}}
+.ai-dotmark{width:38px;height:38px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#a075ff,#6cb5ff 55%,#71f1bb);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.ai-dotmark svg{width:22px;height:22px}.live-dot{position:absolute;right:4px;top:4px;width:9px;height:9px;border-radius:50%;background:#71f1bb;border:2px solid #11151d;box-shadow:0 0 0 4px rgba(113,241,187,.08)}
+
+.assist-panel{position:fixed;right:24px;bottom:92px;z-index:69;width:min(430px,calc(100vw - 28px));height:min(680px,calc(100vh - 120px));border-radius:28px;border:1px solid rgba(255,255,255,.10);background:linear-gradient(180deg,rgba(19,24,34,.985),rgba(12,16,23,.985));box-shadow:0 35px 90px rgba(0,0,0,.58);backdrop-filter:blur(22px);display:none;overflow:hidden}
+.assist-panel.show{display:grid;grid-template-rows:auto auto 1fr auto;animation:assistIn .22s ease}
+@keyframes assistIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+.assist-head{padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:center;gap:12px}.assist-title{display:flex;align-items:center;gap:12px}.assist-title b{display:block;font-size:16px}.assist-title span{display:block;font-size:10px;color:#8f9bad;margin-top:3px}
+.assist-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06)}.assist-tab{border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.025);color:#9ca8ba;border-radius:14px;min-height:42px;font-size:12px;font-weight:850;transition:.18s}.assist-tab:hover{background:rgba(255,255,255,.05);color:#fff}.assist-tab.active{background:linear-gradient(135deg,rgba(108,181,255,.16),rgba(113,241,187,.12));border-color:rgba(113,241,187,.18);color:#fff}
+.assist-body{min-height:0;overflow:auto;padding:14px}.assist-view{display:none}.assist-view.active{display:block}.chat-log{display:grid;gap:10px}.msg{max-width:88%;padding:11px 13px;border-radius:17px;font-size:12px;line-height:1.55;white-space:pre-wrap}.msg.bot{justify-self:start;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.07);color:#dbe4f1}.msg.user{justify-self:end;background:linear-gradient(135deg,rgba(108,181,255,.18),rgba(160,117,255,.16));border:1px solid rgba(108,181,255,.18);color:#fff}.msg.typing{display:flex;gap:5px;align-items:center;width:max-content}.msg.typing i{width:6px;height:6px;border-radius:50%;background:#9fb0c7;animation:typeBounce 1s infinite}.msg.typing i:nth-child(2){animation-delay:.15s}.msg.typing i:nth-child(3){animation-delay:.3s}@keyframes typeBounce{50%{transform:translateY(-4px);opacity:.55}}
+.quick-prompts{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.quick-prompt{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:#b9c5d6;border-radius:999px;padding:8px 10px;font-size:10px;font-weight:800;transition:.16s}.quick-prompt:hover{transform:translateY(-2px);background:rgba(108,181,255,.08);color:#fff}
+.assist-compose{padding:12px;border-top:1px solid rgba(255,255,255,.07);display:flex;gap:8px;background:rgba(7,10,15,.35)}.assist-input{flex:1;min-width:0;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.04);color:#fff;border-radius:15px;padding:11px 12px;outline:none}.assist-input:focus{border-color:rgba(113,241,187,.28);box-shadow:0 0 0 3px rgba(113,241,187,.06)}.send-ai{width:44px;height:44px;border:0;border-radius:14px;background:linear-gradient(135deg,#6cb5ff,#71f1bb);color:#07110d;font-weight:1000;transition:.18s}.send-ai:hover{transform:translateY(-2px) scale(1.03)}
+.support-card{padding:14px;border-radius:20px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);margin-bottom:10px}.support-card b{font-size:13px}.support-card p{font-size:11px;line-height:1.55;color:#95a2b5;margin:6px 0 0}.support-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.support-form{display:grid;gap:10px;margin-top:12px}.support-form .input{min-height:46px;padding:11px 12px;border-radius:14px}.support-form textarea.input{min-height:100px;resize:vertical}.ticket-success{padding:13px;border-radius:16px;background:rgba(113,241,187,.09);border:1px solid rgba(113,241,187,.15);font-size:11px;line-height:1.5;color:#bff8df;margin-top:10px}
+.assist-status{display:flex;align-items:center;gap:7px;font-size:10px;color:#91a0b3}.assist-status .dot{width:7px;height:7px;box-shadow:none}
+@media(max-width:700px){.assist-launcher{right:12px;bottom:88px}.assist-orb{width:56px;padding:0;justify-content:center}.assist-orb .assist-label{display:none}.assist-panel{right:10px;bottom:154px;width:calc(100vw - 20px);height:min(620px,calc(100vh - 178px))}}
+
+
+/* v6.3 localization + responsive hardening */
+.lang-picker{position:relative;z-index:90}.lang-trigger{min-height:42px;display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#f5f7fb;font-weight:850;cursor:pointer;transition:.18s}.lang-trigger:hover{transform:translateY(-2px);background:rgba(255,255,255,.07);border-color:rgba(113,241,187,.22)}.lang-flag{width:24px;height:17px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}.lang-flag svg{width:24px;height:17px;display:block;border-radius:3px;box-shadow:0 0 0 1px rgba(255,255,255,.12)}.lang-caret{font-size:10px;color:#8f9bad}.lang-menu{position:absolute;right:0;top:calc(100% + 8px);width:205px;padding:8px;border-radius:18px;border:1px solid rgba(255,255,255,.1);background:rgba(15,19,27,.98);box-shadow:0 24px 70px rgba(0,0,0,.5);backdrop-filter:blur(18px);display:none}.lang-picker.open .lang-menu{display:grid;animation:langIn .16s ease}@keyframes langIn{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:none}}.lang-option{appearance:none;border:0;background:transparent;color:#dce3ee;padding:11px 12px;border-radius:12px;display:flex;align-items:center;gap:10px;text-align:left;font-weight:800;cursor:pointer;transition:.16s}.lang-option:hover{background:rgba(255,255,255,.06);transform:translateX(2px)}.lang-option.active{background:linear-gradient(90deg,rgba(108,181,255,.14),rgba(113,241,187,.10));color:#fff}.login-lang-row{display:flex;justify-content:flex-end;margin-bottom:8px}.login-card .lang-menu{right:0}.top-actions .lang-trigger{min-height:42px}.top-actions{flex-wrap:wrap}.topbar{gap:12px}.content{width:100%}.card,.modal-card,.table-wrap{max-width:100%}.page-head>*{min-width:0}.page-head .h2,.section-title,.entity-title,.channel-name{overflow-wrap:anywhere}.table-wrap{-webkit-overflow-scrolling:touch}.modal-card{overscroll-behavior:contain}.input,select,button{max-width:100%}
+@media (max-width:1280px){#app{grid-template-columns:230px 1fr}.sidebar{padding:14px}.content{padding:22px}.grid.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.channel-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:980px){.top-title span{display:none}.top-actions{gap:7px}.top-actions>.btn{padding:9px 11px}.lang-trigger{padding:8px 10px}.content{max-width:100%}.modal{align-items:flex-end;padding:10px}.modal-card{width:100%;max-height:92dvh;border-radius:24px 24px 18px 18px}.grid.two,.grid.three,.network-stage{grid-template-columns:1fr!important}}
+@media (max-width:700px){.topbar{height:auto;min-height:66px;padding:10px 12px}.top-actions .btn.secondary.small{display:none}.lang-trigger .lang-name{display:none}.lang-menu{position:fixed;right:12px;top:72px;width:190px}.content{padding:14px 10px 94px}.grid.kpis{grid-template-columns:1fr 1fr;gap:10px}.card{padding:14px;border-radius:20px}.kpi .value{font-size:clamp(24px,8vw,36px)}.rails{grid-template-columns:1fr}.channel-grid{grid-template-columns:1fr}.entity{grid-template-columns:48px minmax(0,1fr);gap:10px}.entity-status{grid-column:2;justify-content:flex-start}.entity-icon{width:48px;height:48px}.table{min-width:680px}.row{flex-direction:column}.modal-card{padding:16px}.modal-head h3{font-size:25px}.split-grid{grid-template-columns:1fr 1fr!important}.user-grid{grid-template-columns:84px minmax(0,1fr)}.user-photo{width:80px;height:80px}.user-stats{gap:7px}.user-stat{min-width:92px;flex:1}.h2{font-size:23px}.page-head p{font-size:12px}.activity-row{padding:11px 0}}
+@media (max-width:480px){.grid.kpis{grid-template-columns:1fr}.split-grid{grid-template-columns:1fr!important}.top-actions .avatar-photo{width:40px;height:40px}.lang-trigger{min-height:40px}.mobile-nav{height:72px}.content{padding-bottom:88px}.login-card{padding:20px;border-radius:24px}.login-card h2{font-size:28px}.right-pane{padding:14px}.rail{min-height:108px}.channel-card{grid-template-columns:64px minmax(0,1fr)}.channel-logo{width:64px;height:64px}.channel-logo svg{width:42px;height:42px}.channel-rev{grid-column:2}.toast-wrap{right:10px;top:78px;width:calc(100vw - 20px)}}
+
+
+/* v6.5 support safe-zone + visible language + clickable activity */
+.assist-launcher{bottom:92px!important;right:28px!important}
+.activity-row.interactive{cursor:pointer;border-radius:14px;padding-left:10px;padding-right:10px;margin-left:-10px;margin-right:-10px;transition:transform .18s ease,background .18s ease,border-color .18s ease}
+.activity-row.interactive:hover{transform:translateX(4px);background:rgba(108,181,255,.055);border-color:rgba(108,181,255,.16)}
+.activity-row.interactive:active{transform:translateX(2px) scale(.995)}
+.activity-chevron{font-size:20px;color:#6cb5ff;opacity:.0;transform:translateX(-7px);transition:.18s}
+.activity-row.interactive:hover .activity-chevron{opacity:1;transform:none}
+.activity-right{display:flex;align-items:center;gap:12px;justify-content:flex-end}
+.activity-headline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px}
+.activity-history-btn{min-height:38px!important;padding:8px 12px!important}
+.lang-picker{display:block!important;visibility:visible!important;opacity:1!important;min-width:126px}
+.lang-trigger{background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.035))!important;border-color:rgba(108,181,255,.18)!important;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.lang-trigger .lang-name{display:inline!important}
+.top-actions{overflow:visible!important;flex-wrap:nowrap}
+.history-list{display:grid;gap:10px;margin-top:14px}.history-item{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px;border:1px solid rgba(255,255,255,.08);border-radius:18px;background:rgba(255,255,255,.03);cursor:pointer;transition:.18s}.history-item:hover{transform:translateY(-2px);background:rgba(255,255,255,.05);border-color:rgba(108,181,255,.18)}.history-icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(108,181,255,.18),rgba(160,117,255,.15));font-weight:900}.history-main b{display:block;font-size:13px;line-height:1.35}.history-main span{display:block;font-size:11px;color:#91a0b2;margin-top:4px}.history-amount{text-align:right;font-weight:900;white-space:nowrap}.history-detail{margin-top:14px;padding:16px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025)}
+@media(max-width:980px){.assist-launcher{bottom:96px!important;right:14px!important}.lang-picker{min-width:0}.lang-trigger .lang-name{display:none!important}.lang-trigger{padding:9px 10px}.top-actions{gap:7px}.top-actions .btn[data-action="sync"]{display:none}}
+@media(max-width:700px){.assist-launcher{bottom:102px!important;right:12px!important}.assist-panel{bottom:170px!important}.activity-right{justify-content:flex-start}.history-item{grid-template-columns:44px minmax(0,1fr)}.history-amount{grid-column:2;text-align:left}}
+
+
+/* v6.6 fresh-login + prominent functional language control */
+.top-language-shell{position:relative;z-index:260;display:flex;align-items:center}
+.top-language-shell .lang-picker{z-index:280}
+.top-language-shell .lang-trigger{min-width:112px;min-height:46px;padding:9px 13px;border-radius:16px;background:linear-gradient(180deg,rgba(108,181,255,.12),rgba(113,241,187,.07));border-color:rgba(108,181,255,.24);box-shadow:0 10px 28px rgba(0,0,0,.25)}
+.top-language-shell .lang-trigger:hover{border-color:rgba(113,241,187,.38);box-shadow:0 14px 34px rgba(0,0,0,.32),0 0 0 4px rgba(113,241,187,.05)}
+.lang-short{font-size:12px;font-weight:950;letter-spacing:.7px;color:#fff}.lang-check{margin-left:auto;color:#71f1bb;font-weight:950}.lang-menu{z-index:9999!important;pointer-events:auto!important}.lang-option{pointer-events:auto!important}
+.login-lang-row .lang-trigger{min-width:150px}
+@media(max-width:980px){.top-language-shell .lang-trigger{min-width:72px}.top-language-shell .lang-name{display:none!important}.top-language-shell .lang-short{display:inline!important}.top-language-shell .lang-flag{font-size:21px}.topbar{overflow:visible!important}}
+@media(max-width:520px){.top-language-shell .lang-trigger{min-width:62px;padding:8px 9px}.top-language-shell .lang-short{font-size:11px}.top-actions{gap:6px}.avatar-photo{width:42px;height:42px}}
+
+/* v7 Executive Pro */
+.exec-kpi-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.exec-kpi{padding:16px;border-radius:22px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.025));min-width:0;transition:.2s;position:relative;overflow:hidden}
+.exec-kpi:hover{transform:translateY(-3px);border-color:rgba(113,241,187,.16);box-shadow:0 24px 50px rgba(0,0,0,.28)}
+.exec-kpi:before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 15%,rgba(255,255,255,.07) 48%,transparent 82%);transform:translateX(-120%);transition:transform .7s ease;pointer-events:none}
+.exec-kpi:hover:before{transform:translateX(120%)}
+.exec-kpi .ek-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8f9aac;font-weight:850}.exec-kpi .ek-value{font-size:clamp(24px,2.2vw,38px);font-weight:900;letter-spacing:-1.1px;margin-top:9px;line-height:1;overflow-wrap:anywhere}.exec-kpi .ek-meta{font-size:10px;color:#8e9bad;margin-top:7px;line-height:1.4}
+.money-flow-card{overflow:hidden}.flow-stage{display:grid;grid-template-columns:1fr 70px 1fr 70px 1fr;align-items:center;gap:8px;padding:18px 4px}.flow-node{position:relative;min-height:118px;border-radius:22px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.025));display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:14px;overflow:hidden}.flow-node .fn-icon{width:44px;height:44px;border-radius:16px;display:grid;place-items:center;margin-bottom:9px;background:linear-gradient(145deg,rgba(108,181,255,.19),rgba(160,117,255,.14));font-weight:900}.flow-node strong{font-size:14px}.flow-node small{display:block;color:#93a0b2;margin-top:5px;line-height:1.4}.flow-arrow{height:2px;position:relative;background:linear-gradient(90deg,rgba(108,181,255,.22),rgba(113,241,187,.5),rgba(108,181,255,.22));border-radius:999px}.flow-arrow:after{content:"";position:absolute;top:50%;left:0;width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 18px rgba(113,241,187,.8);transform:translate(-5px,-50%);animation:flowDot 2.8s linear infinite}.flow-arrow:nth-of-type(4):after{animation-delay:1.3s}@keyframes flowDot{0%{left:0;opacity:0}10%{opacity:1}90%{opacity:1}100%{left:100%;opacity:0}}
+.split-destination{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:9px;width:100%}.split-mini{border-radius:12px;padding:8px 6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}.split-mini b{font-size:12px;display:block}.split-mini span{font-size:9px;color:#91a0b1;display:block;margin-top:3px}
+.executive-banner{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 18px;margin-bottom:16px;border-radius:24px;border:1px solid rgba(113,241,187,.12);background:linear-gradient(90deg,rgba(113,241,187,.08),rgba(108,181,255,.055),rgba(160,117,255,.06));box-shadow:var(--glow)}.executive-banner b{font-size:15px}.executive-banner span{font-size:11px;color:#96a3b5;display:block;margin-top:4px}.live-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;background:rgba(113,241,187,.09);border:1px solid rgba(113,241,187,.16);font-size:10px;font-weight:900;color:#8df8c6;white-space:nowrap}.live-badge i{width:8px;height:8px;border-radius:50%;background:#71f1bb;box-shadow:0 0 0 5px rgba(113,241,187,.08);animation:pulseLive 1.8s ease-in-out infinite}@keyframes pulseLive{50%{box-shadow:0 0 0 9px rgba(113,241,187,0)}}
+.notify-btn{width:44px;height:44px;border-radius:15px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.035);color:#dbe4ef;display:grid;place-items:center;position:relative;transition:.18s}.notify-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.06);border-color:rgba(108,181,255,.18)}.notify-btn svg{width:20px;height:20px}.notify-badge{position:absolute;right:-3px;top:-4px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:linear-gradient(135deg,#ff6f8b,#ff9d6c);display:grid;place-items:center;font-size:9px;font-weight:900;color:#18080b;border:2px solid #0c1016}
+.notification-list{display:grid;gap:9px}.notice{display:grid;grid-template-columns:42px 1fr auto;gap:12px;align-items:center;padding:12px;border-radius:18px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)}.notice-icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(108,181,255,.14),rgba(113,241,187,.1));font-size:17px}.notice b{font-size:13px}.notice p{font-size:11px;color:#929fb1;margin:4px 0 0;line-height:1.4}.notice time{font-size:10px;color:#7e8a9b;white-space:nowrap}
+.channel-analytics-layout{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-top:14px}.mini-line-chart{height:190px;display:flex;align-items:flex-end;gap:8px;padding:12px 0 0}.mini-line-bar{flex:1;min-width:8px;border-radius:9px 9px 3px 3px;background:linear-gradient(180deg,#9a78ff,#5ba6ff 55%,#61dcae);opacity:.9;transition:.18s}.mini-line-bar:hover{transform:translateY(-3px);filter:brightness(1.08)}
+.metric-stack{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric-tile{padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03)}.metric-tile span{font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:#8997a9;font-weight:850}.metric-tile b{display:block;font-size:22px;margin-top:7px;letter-spacing:-.7px}.metric-tile small{display:block;color:#91a0b2;margin-top:4px;font-size:9px}
+.status-timeline{display:grid;gap:0;margin-top:14px}.time-step{display:grid;grid-template-columns:24px 1fr;gap:10px;min-height:58px}.time-step .rail{position:relative;width:2px;background:rgba(255,255,255,.09);margin:auto;height:100%}.time-step .rail:before{content:"";position:absolute;top:2px;left:50%;width:10px;height:10px;border-radius:50%;transform:translateX(-50%);background:#71f1bb;box-shadow:0 0 0 5px rgba(113,241,187,.07)}.time-step:last-child .rail{background:transparent}.time-step b{font-size:12px}.time-step p{font-size:10px;color:#8e9aac;margin:4px 0 0}
+.demo-role-switch{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.role-btn{padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:#d8e0eb;font-size:11px;font-weight:850;transition:.18s}.role-btn:hover{transform:translateY(-2px)}.role-btn.active{background:linear-gradient(135deg,rgba(108,181,255,.16),rgba(113,241,187,.12));border-color:rgba(113,241,187,.2);color:#fff}
+@media(max-width:1250px){.exec-kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.flow-stage{grid-template-columns:1fr 44px 1fr}.flow-stage .flow-arrow:nth-of-type(4),.flow-stage .flow-node:last-child{grid-column:1/-1}.flow-stage .flow-node:last-child{margin-top:8px}.channel-analytics-layout{grid-template-columns:1fr}}
+@media(max-width:700px){.exec-kpi-grid{grid-template-columns:1fr 1fr}.executive-banner{align-items:flex-start;flex-direction:column}.flow-stage{grid-template-columns:1fr;gap:10px}.flow-arrow{height:42px;width:2px;margin:auto;background:linear-gradient(180deg,rgba(108,181,255,.22),rgba(113,241,187,.5),rgba(108,181,255,.22))}.flow-arrow:after{top:0;left:50%;animation:flowDotV 2.6s linear infinite}.flow-arrow:nth-of-type(4):after{animation-delay:1.2s}@keyframes flowDotV{0%{top:0;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:100%;opacity:0}}.flow-stage .flow-arrow:nth-of-type(4),.flow-stage .flow-node:last-child{grid-column:auto}.metric-stack{grid-template-columns:1fr 1fr}.notify-btn{width:40px;height:40px}}
+
+
+
+/* v7.1 — true mobile app layout */
+@media (max-width:700px){
+  html,body{width:100%;max-width:100%;overflow-x:hidden}
+  body{background:
+    radial-gradient(440px 300px at 0% 20%,rgba(160,117,255,.11),transparent 60%),
+    radial-gradient(420px 320px at 100% 72%,rgba(113,241,187,.08),transparent 60%),
+    #0b0d12}
+  #app,.main,.content,.page{width:100%;max-width:100%;min-width:0}
+  #app{display:block}
+  .main{overflow-x:hidden}
+  .content{padding:14px 12px calc(104px + env(safe-area-inset-bottom));margin:0}
+
+  /* App-like compact header */
+  .topbar{height:64px;padding:0 12px;gap:8px;background:rgba(10,13,18,.92);border-bottom:1px solid rgba(255,255,255,.07)}
+  .top-title{min-width:0;max-width:120px}
+  .top-title strong{font-size:15px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .top-title span{display:none}
+  .top-actions{margin-left:auto;gap:6px}
+  .notify-btn{width:40px;height:40px;border-radius:14px}
+  .notify-btn svg{width:19px;height:19px}
+  .avatar-photo{width:40px;height:40px;border-radius:14px}
+  .top-language-shell .lang-trigger{height:40px;min-width:76px!important;padding:7px 9px!important;border-radius:14px!important}
+  .top-language-shell .lang-flag{font-size:20px!important}
+  .top-language-shell .lang-short{font-size:11px!important}
+  .top-language-shell .lang-name{display:none!important}
+
+  /* Typography scaled for phone */
+  .h2{font-size:24px;letter-spacing:-.7px}
+  .page-head{margin-bottom:14px;gap:10px}
+  .page-head p{font-size:12px;line-height:1.5;margin-top:5px}
+  .section-title{font-size:18px;margin-bottom:11px}
+  .p{font-size:13px;line-height:1.55}
+  .card{padding:14px;border-radius:20px}
+
+  /* Executive header */
+  .executive-banner{padding:14px;border-radius:20px;align-items:flex-start;flex-direction:column;gap:10px;margin-bottom:12px}
+  .executive-banner b{font-size:16px;line-height:1.2}
+  .executive-banner span{font-size:11px;line-height:1.45}
+  .live-badge{font-size:9px;padding:7px 10px}
+
+  /* Executive KPIs are compact app tiles */
+  .exec-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}
+  .exec-kpi{padding:13px;min-height:116px;border-radius:19px}
+  .exec-kpi .ek-label{font-size:9px;letter-spacing:.8px;line-height:1.25}
+  .exec-kpi .ek-value{font-size:26px!important;letter-spacing:-.8px;margin-top:8px;white-space:normal;overflow-wrap:anywhere}
+  .exec-kpi .ek-meta{font-size:10px;line-height:1.35;margin-top:7px}
+  .exec-kpi:last-child:nth-child(odd){grid-column:1/-1;min-height:96px}
+
+  /* Standard KPI tiles */
+  .grid.kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px}
+  .kpi{min-height:120px}
+  .kpi .label{font-size:9px;letter-spacing:.8px;line-height:1.25}
+  .kpi .value,.split-number{font-size:28px!important;letter-spacing:-1px;line-height:1.02}
+  .kpi .meta{font-size:10px;line-height:1.35}
+  .grid.two,.grid.three,.split-grid,.network-stage{grid-template-columns:1fr!important;gap:12px}
+
+  /* Revenue flow becomes a vertical app timeline */
+  .money-flow-card{padding:14px}
+  .flow-stage{grid-template-columns:1fr!important;gap:8px;padding:8px 0}
+  .flow-node{min-height:112px;padding:13px;border-radius:19px}
+  .flow-node .fn-icon{width:40px;height:40px;border-radius:14px;margin-bottom:8px}
+  .flow-node strong{font-size:15px}
+  .flow-node small{font-size:11px;line-height:1.4}
+  .flow-arrow{width:2px;height:38px;margin:0 auto;background:linear-gradient(180deg,rgba(108,181,255,.22),rgba(113,241,187,.5),rgba(108,181,255,.22))}
+  .flow-arrow:after{top:0;left:50%!important;transform:translate(-50%,-5px);animation:flowDotMobile 2.4s linear infinite}
+  @keyframes flowDotMobile{0%{top:0;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:100%;opacity:0}}
+  .split-destination{gap:6px}.split-mini{padding:7px 4px}.split-mini b{font-size:11px}.split-mini span{font-size:8px}
+
+  /* Chart sized like native analytics card */
+  .chart{height:190px;gap:7px;padding-top:10px}
+  .bar{min-width:10px;border-radius:9px 9px 3px 3px}
+  .legend{font-size:9px;margin-top:8px}
+
+  /* Activity becomes compact tappable rows */
+  .activity-headline{align-items:flex-start;margin-bottom:2px}
+  .activity-history-btn{min-height:34px!important;padding:7px 10px!important;font-size:10px!important}
+  .activity-row,.activity-row.interactive{padding:12px 4px!important;margin:0!important;border-radius:12px;grid-template-columns:minmax(0,1fr) auto!important;gap:8px}
+  .activity-title{font-size:12px;line-height:1.35}
+  .activity-time{font-size:10px;margin-top:4px}
+  .activity-amount{font-size:12px;text-align:right;white-space:nowrap}
+  .activity-right{justify-content:flex-end!important;align-items:center}
+  .activity-chevron{display:none}
+
+  /* Revenue page */
+  .channel-grid{grid-template-columns:1fr!important;gap:10px}
+  .channel-card{grid-template-columns:58px minmax(0,1fr) auto!important;gap:11px;padding:12px;border-radius:19px;align-items:center}
+  .channel-logo{width:58px;height:58px;border-radius:17px}
+  .channel-logo svg{width:38px;height:38px}
+  .channel-name{font-size:14px;white-space:normal;overflow:visible;text-overflow:clip}
+  .channel-sub{font-size:10px;white-space:normal;overflow:visible;text-overflow:clip}
+  .channel-rev{grid-column:auto!important;text-align:right!important}
+  .channel-rev b{font-size:14px}.channel-rev span{font-size:9px}
+  .toolbar{gap:7px;margin-bottom:11px}
+  .search{width:100%}.input{min-height:48px;padding:12px 13px;border-radius:15px;font-size:13px}
+  .chip{padding:8px 10px;font-size:10px}
+
+  /* Wallet: rails and history fit the screen */
+  .rails{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px}
+  .rail{min-height:112px;padding:13px;border-radius:19px}
+  .rail-copy b{font-size:12px}.rail-copy span{font-size:9px}
+  .table-wrap{width:100%;max-width:100%;border-radius:18px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .table{min-width:660px}
+  .table th,.table td{padding:12px 13px;font-size:11px}
+  .table th{font-size:9px}
+
+  /* Network & profile */
+  .entity{grid-template-columns:48px minmax(0,1fr) auto;gap:10px;padding:11px;border-radius:17px}
+  .entity-icon{width:48px;height:48px;border-radius:15px}
+  .entity-title{font-size:13px}.entity-sub{font-size:9px}
+  .user-grid{grid-template-columns:78px minmax(0,1fr);gap:14px}
+  .user-photo{width:78px;height:78px;border-radius:22px}
+  .user-stat{min-width:88px;padding:10px}.user-stat b{font-size:16px}.user-stat span{font-size:9px}
+
+  /* Modals feel native */
+  .modal{padding:0;align-items:flex-end}
+  .modal-card{width:100%;max-height:92dvh;border-radius:26px 26px 0 0;padding:17px 14px calc(18px + env(safe-area-inset-bottom));border-bottom:0}
+  .modal-head h3{font-size:24px}
+  .row{flex-direction:column;gap:0}
+  .split-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px}
+  .split-card{padding:12px;border-radius:18px}.split-card .title{font-size:9px}.split-card .amount{font-size:24px!important}.split-card .desc{font-size:9px}
+
+  /* Native-style bottom tabs */
+  .mobile-nav{height:72px;grid-template-columns:repeat(5,1fr);padding:4px 4px calc(6px + env(safe-area-inset-bottom));background:rgba(8,11,16,.96);box-shadow:0 -8px 26px rgba(0,0,0,.28)}
+  .mobile-nav button{font-size:9px;gap:1px;padding:4px 0}
+  .mobile-nav svg{width:22px!important;height:22px!important}
+
+  /* Floating support stays above nav and Netlify badge area */
+  .assist-launcher{right:12px!important;bottom:138px!important;transform:scale(.9);transform-origin:right bottom}
+  .assist-panel{right:10px!important;bottom:210px!important;width:calc(100vw - 20px)!important;max-height:68dvh!important}
+
+  /* keep language/dropdowns on-screen */
+  .lang-menu{position:fixed!important;top:72px!important;right:10px!important;left:auto!important;width:min(240px,calc(100vw - 20px))!important}
+  .picker-menu{max-height:260px;overflow:auto}
+}
+
+@media (max-width:420px){
+  .content{padding-left:10px;padding-right:10px}
+  .top-title{max-width:105px}
+  .exec-kpi .ek-value{font-size:24px!important}
+  .kpi .value,.split-number{font-size:26px!important}
+  .channel-card{grid-template-columns:54px minmax(0,1fr)!important}
+  .channel-logo{width:54px;height:54px}
+  .channel-rev{grid-column:2!important;text-align:left!important;margin-top:2px}
+  .rails{grid-template-columns:1fr 1fr!important}
+}
+
+
+/* v7.2 mobile-first payout/admin layouts */
+.mobile-payout-list,.mobile-admin-list{display:none}.access-card{text-align:center;max-width:620px;margin:20px auto}.access-lock{font-size:44px;margin-bottom:12px}
+@media(max-width:700px){
+  .desktop-payout-table,.desktop-admin-table{display:none!important}.mobile-payout-list,.mobile-admin-list{display:grid;gap:12px}
+  .payout-history-card{padding:14px}.mobile-payout-card,.mobile-admin-card{border:1px solid rgba(255,255,255,.09);border-radius:22px;padding:16px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));box-shadow:inset 0 1px rgba(255,255,255,.025)}
+  .mp-head,.ma-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.mp-head b,.ma-top b{display:block;font-size:15px;margin-top:3px}.mp-label{display:block;color:#8f9cb0;font-size:10px;font-weight:900;letter-spacing:1px;text-transform:uppercase}.mp-amount,.ma-amount{font-size:30px;line-height:1;font-weight:900;letter-spacing:-1px;margin:18px 0}.mp-amount small{font-size:13px;color:#9ca8b8;letter-spacing:0}.mp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mp-grid>div{padding:11px 12px;border-radius:15px;background:rgba(255,255,255,.025);min-width:0}.mp-grid span{display:block;color:#8d99aa;font-size:10px;text-transform:uppercase;letter-spacing:.7px}.mp-grid b{display:block;font-size:12px;line-height:1.35;margin-top:4px;overflow-wrap:anywhere}.mp-action,.ma-action{width:100%;margin-top:14px;min-height:48px}.mobile-payout-card .pill,.mobile-admin-card .pill{flex:0 0 auto;font-size:10px;padding:6px 9px;min-height:30px}
+  #page-admin .page-head{align-items:flex-start}.access-card{margin:8px 0;text-align:left}.access-lock{text-align:left}
+}
+@media(max-width:420px){.mp-grid{grid-template-columns:1fr}.mp-amount,.ma-amount{font-size:28px}}
+</style>
+</head>
+<body>
+<div id="loader"><div class="loader-box"><div class="logo-mark-lg"><div class="brandflow"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="orbit" cx="60" cy="60" r="45"/><path class="r1" d="M24 31 C47 31 47 58 64 58"/><path class="r2" d="M24 60 C46 60 48 60 64 60"/><path class="r3" d="M24 89 C47 89 47 62 64 62"/><path d="M66 60 H94" stroke="#ffffff" stroke-width="12" stroke-linecap="round"/><circle class="hub" cx="97" cy="60" r="7"/></svg></div><div class="logo-flood"></div></div><div class="loader-title">NetworkPay</div><div class="loader-sub" id="loaderText">Launching premium workspace…</div></div></div>
+<section id="login"><div class="left-pane"><div class="top-brand"><div class="logo-mark"><div class="brandflow"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="orbit" cx="60" cy="60" r="45"/><path class="r1" d="M24 31 C47 31 47 58 64 58"/><path class="r2" d="M24 60 C46 60 48 60 64 60"/><path class="r3" d="M24 89 C47 89 47 62 64 62"/><path d="M66 60 H94" stroke="#ffffff" stroke-width="12" stroke-linecap="round"/><circle class="hub" cx="97" cy="60" r="7"/></svg></div></div><div class="brand-copy"><b>NetworkPay</b><span>MCN financial operations</span></div></div><div class="hero-wrap"><div class="kicker">Premium browser demo</div><div class="h1">Track creators, channels and payouts with clear financial analytics.</div><div class="p">One secure workspace for MCN operations, channel management, settlements and creator payouts. Financial split details are shown only after authorized sign in.</div><div class="hero-badges"><span class="badge-chip">MCN operations</span><span class="badge-chip">Channel management</span><span class="badge-chip">Global payouts</span><span class="badge-chip">Production API</span></div><div class="mini-grid"><div class="mini-card"><div class="k">Settlement workspace</div><div class="v">24/7</div><div class="subtle">Operational access</div></div><div class="mini-card"><div class="k">Connected channels</div><div class="v">8</div><div class="subtle">Across active MCN entities</div></div><div class="mini-card"><div class="k">Currencies</div><div class="v">6</div><div class="subtle">USD · EUR · CNY · GBP · KRW · JPY</div></div></div></div><div class="subtle">Production endpoint connected to Railway PostgreSQL. Demo account available below.</div></div><div class="right-pane"><div class="login-card"><div class="login-lang-row"><div id="languagePickerLogin"></div></div><div class="kicker">Secure access</div><h2>Sign in to your workspace</h2><div class="p" style="font-size:13px;line-height:1.6;margin:0 0 8px">Use the MCN owner account to enter the live browser demo.</div><div class="field"><label>Email</label><input class="input" id="email" value="akbota@networkpay" placeholder="akbota@networkpay"></div><div class="field"><label>Password</label><input class="input" id="password" type="password" value="demo" placeholder="demo"></div><button class="btn primary full" id="loginBtn">Enter NetworkPay</button><div class="login-hint"><b>Demo credentials:</b><br>akbota@networkpay<br>demo</div></div></div></section>
+<section id="app" class="hidden"><aside class="sidebar"><div class="side-box"><div class="side-title"><div class="logo-mark"><div class="brandflow"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="orbit" cx="60" cy="60" r="45"/><path class="r1" d="M24 31 C47 31 47 58 64 58"/><path class="r2" d="M24 60 C46 60 48 60 64 60"/><path class="r3" d="M24 89 C47 89 47 62 64 62"/><path d="M66 60 H94" stroke="#ffffff" stroke-width="12" stroke-linecap="round"/><circle class="hub" cx="97" cy="60" r="7"/></svg></div></div><div><div style="font-weight:900;font-size:18px;letter-spacing:-.3px">NetworkPay</div><div class="side-meta">Premium operations</div></div></div><nav class="nav" id="desktopNav"></nav><div class="api-box"><div style="display:flex;align-items:center;gap:10px"><span class="dot"></span><b style="font-size:12px">Production API</b></div><div class="subtle" style="margin-top:8px">Railway PostgreSQL online<br>Interactive browser demo</div></div></div></aside><main class="main"><div class="topbar"><div class="top-title"><strong id="workspaceName">Asteron Group</strong><span id="roleText">MCN Owner</span></div><div class="top-actions"><button class="btn secondary small" data-action="sync">Sync data</button><button class="notify-btn" data-action="open-notifications" title="Notifications" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M9.8 21h4.4"/></svg><span class="notify-badge">3</span></button><div class="top-language-shell" id="languagePickerTop"></div><button class="avatar-photo" data-action="navigate" data-target="profile" title="Open profile"><svg viewBox="0 0 100 100"><defs><linearGradient id="pfSmall" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffcfbe"/><stop offset="100%" stop-color="#ffb29f"/></linearGradient></defs><rect width="100" height="100" rx="24" fill="#101823"/><path d="M22 92c5-21 17-31 28-31s24 10 28 31" fill="#5fe0b5"/><circle cx="50" cy="34" r="15" fill="url(#pfSmall)"/><path d="M33 32c0-10 7-18 18-18 13 0 19 8 19 20-5-4-11-8-18-8-6 0-11 2-19 6Z" fill="#21141d"/></svg></button></div></div><div class="content"><section class="page active" id="page-home"></section><section class="page" id="page-revenue"></section><section class="page" id="page-wallet"></section><section class="page" id="page-network"></section><section class="page" id="page-admin"></section><section class="page" id="page-profile"></section></div></main><nav class="mobile-nav" id="mobileNav"></nav></section>
+<div class="modal" id="payoutModal"><div class="modal-card"><div class="modal-head"><div><div class="kicker">Create payout</div><h3>New payout request</h3></div><button class="btn ghost small" data-action="close-modal" data-target="payoutModal">Close</button></div><div class="field"><label>Amount</label><input class="input" id="payoutAmount" type="number" min="1" value="5000"></div><div class="row"><div class="field"><label>Currency</label><div class="custom-picker" id="currencyPicker"><button type="button" class="picker-trigger" data-picker="currency"><span class="picker-current" id="currencyCurrent"></span><span class="picker-chevron">⌄</span></button><div class="picker-menu" id="currencyMenu"></div><input type="hidden" id="payoutCurrency" value="USD"></div></div><div class="field"><label>Method</label><div class="custom-picker" id="methodPicker"><button type="button" class="picker-trigger" data-picker="method"><span class="picker-current" id="methodCurrent"></span><span class="picker-chevron">⌄</span></button><div class="picker-menu" id="methodMenu"></div><input type="hidden" id="payoutMethod" value="Bank Transfer"></div></div></div><div class="share-control" id="shareControl"><div class="share-head"><div><b>MCN contract share</b><span>Adjust according to the creator–MCN agreement. Creator share updates automatically.</span></div><div class="share-value" id="mcnRateValue">30%</div></div><input class="share-slider" id="mcnRateSlider" type="range" min="0" max="50" step="1" value="30"><div class="share-scale"><span>0%</span><span>10%</span><span>20%</span><span>30%</span><span>40%</span><span>50%</span></div><div class="preset-row"><button class="preset-btn" type="button" data-mcn-rate="10">10%</button><button class="preset-btn" type="button" data-mcn-rate="15">15%</button><button class="preset-btn" type="button" data-mcn-rate="20">20%</button><button class="preset-btn" type="button" data-mcn-rate="25">25%</button><button class="preset-btn active" type="button" data-mcn-rate="30">30%</button></div><div class="creator-live"><span>Creator share</span><b id="creatorRateValue">67%</b></div><div class="platform-lock"><span class="lock-icon">🔒</span><span><b>NetworkPay platform fee: 3%</b><br>Fixed by the platform and cannot be changed during payout.</span></div></div><div id="payoutSplitPreview"></div><button class="btn primary full" id="createPayoutBtn">Submit payout request</button></div></div>
+<div class="modal" id="channelModal"><div class="modal-card"><div class="modal-head"><div><div class="kicker">Channel detail</div><h3 id="channelModalTitle">Channel</h3></div><button class="btn ghost small" data-action="close-modal" data-target="channelModal">Close</button></div><div id="channelModalBody"></div></div></div>
+<div class="modal" id="analyticsModal"><div class="modal-card"><div class="modal-head"><div><div class="kicker">Settlement analytics</div><h3 id="analyticsTitle">Payout breakdown</h3></div><button class="btn ghost small" data-action="close-modal" data-target="analyticsModal">Close</button></div><div id="analyticsBody"></div></div></div><div class="modal" id="entityModal"><div class="modal-card"><div class="modal-head"><div><div class="kicker">MCN entity</div><h3 id="entityModalTitle">Entity</h3></div><button class="btn ghost small" data-action="close-modal" data-target="entityModal">Close</button></div><div id="entityModalBody"></div></div></div>
+
+<div class="assist-launcher" id="assistLauncher">
+  <button class="assist-mini" id="supportQuickBtn" title="Technical support" aria-label="Technical support">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12a8 8 0 0 1 16 0v4a2 2 0 0 1-2 2h-2v-6h4M4 12v6h4v-6H4Z"/><path d="M16 18c0 2-1.8 3-4 3"/></svg><span class="live-dot"></span>
+  </button>
+  <button class="assist-orb" id="aiQuickBtn"><span class="ai-dotmark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m18.2 15 .9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9.9-2.4Z"/></svg></span><span class="assist-label">NetworkPay AI</span></button>
+</div>
+<div class="assist-panel" id="assistPanel">
+  <div class="assist-head"><div class="assist-title"><span class="ai-dotmark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/></svg></span><div><b>NetworkPay Assistant</b><span>AI finance copilot + support center</span></div></div><button class="btn ghost small" id="closeAssistBtn">Close</button></div>
+  <div class="assist-tabs"><button class="assist-tab active" data-assist-tab="ai">AI Copilot</button><button class="assist-tab" data-assist-tab="support">Technical Support</button></div>
+  <div class="assist-body">
+    <div class="assist-view active" id="assistViewAI"><div class="chat-log" id="chatLog"><div class="msg bot">Hi Akbota. I can explain revenue splits, payouts, channels, balances and the production connection.</div></div><div class="quick-prompts"><button class="quick-prompt" data-ai-prompt="How is a $10,000 payout split?">Explain $10k payout</button><button class="quick-prompt" data-ai-prompt="Show me pending payouts">Pending payouts</button><button class="quick-prompt" data-ai-prompt="Which channels need review?">Channels at risk</button><button class="quick-prompt" data-ai-prompt="Is production API online?">API status</button></div></div>
+    <div class="assist-view" id="assistViewSupport">
+      <div class="support-card"><b>Technical Support</b><p>For this browser demo, support requests are saved locally and receive a demo ticket number. In production this can connect to email, Zendesk, Intercom or your own support backend.</p><div class="assist-status" style="margin-top:10px"><span class="dot"></span> Support desk online</div></div>
+      <div class="support-actions"><button class="btn secondary small" id="issueApiBtn">API / Railway issue</button><button class="btn secondary small" id="issuePayoutBtn">Payout issue</button></div>
+      <div class="support-form"><input class="input" id="supportSubject" placeholder="Subject"><textarea class="input" id="supportMessage" placeholder="Describe the issue…"></textarea><button class="btn primary" id="submitSupportBtn">Create support ticket</button></div><div id="supportResult"></div>
+    </div>
+  </div>
+  <div class="assist-compose" id="assistCompose"><input class="assist-input" id="aiInput" placeholder="Ask NetworkPay AI…"><button class="send-ai" id="sendAiBtn">→</button></div>
+</div>
+
+
+<div class="modal" id="historyModal"><div class="modal-card"><div class="modal-head"><div><div class="kicker">Activity history</div><h3 id="historyTitle">Workspace history</h3></div><button class="btn ghost small" data-action="close-modal" data-target="historyModal">Close</button></div><div class="toolbar"><button class="chip active" data-action="history-filter" data-filter="all">All activity</button><button class="chip" data-action="history-filter" data-filter="payout">Payouts</button><button class="chip" data-action="history-filter" data-filter="revenue">Revenue</button></div><div id="historyBody"></div></div></div>
+<div class="modal" id="notificationModal"><div class="modal-card" style="width:min(680px,100%)"><div class="modal-head"><div><div class="kicker">Notification center</div><h3>Workspace updates</h3></div><button class="btn ghost small" data-action="close-modal" data-target="notificationModal">Close</button></div><div class="notification-list" id="notificationList"></div></div></div>
+<div class="toast-wrap" id="toastWrap"></div>
+<script>
+const API='https://networkpay-backend-production.up.railway.app';
+const SPLIT={creator:67,mcn:30,platform:3};
+let payoutMcnRate=30;
+const LANGS={
+ en:{name:'English',locale:'en-US'},
+ ru:{name:'Русский',locale:'ru-RU'},
+ zh:{name:'中文',locale:'zh-CN'}
+};
+let currentLang='en';
+const TR={
+ ru:{
+ 'Home':'Главная','Revenue':'Доход','Wallet':'Кошелёк','Network':'Сеть','Admin':'Админ','Profile':'Профиль',
+ 'Secure access':'Безопасный вход','Sign in to your workspace':'Войдите в рабочее пространство','Use the MCN owner account to enter the live browser demo.':'Используйте аккаунт владельца MCN для входа в браузерную демо-версию.','Email':'Email','Password':'Пароль','Enter NetworkPay':'Войти в NetworkPay','Demo credentials:':'Демо-данные:',
+ 'Premium browser demo':'Премиальная браузерная версия','Track creators, channels and payouts with clear financial analytics.':'Управляйте авторами, каналами и выплатами с понятной финансовой аналитикой.','Creator analytics':'Аналитика авторов','Revenue split':'Распределение дохода','Platform fee 3%':'Комиссия платформы 3%','Production API':'Production API','Settlement balance':'Расчётный баланс','Live wallet snapshot':'Текущий баланс кошелька','Connected channels':'Подключённые каналы','Across active MCN entities':'Во всех активных MCN','Split logic':'Логика распределения','Creator · MCN · Platform':'Автор · MCN · Платформа',
+ 'Overview':'Обзор','A live operating view across revenue, balances and settlements.':'Актуальный обзор доходов, балансов и расчётов.','Production connected':'Production подключён','Monthly revenue':'Месячный доход','Current reporting period':'Текущий отчётный период','Available balance':'Доступный баланс','Settlement wallet':'Расчётный кошелёк','Pending payouts':'Ожидающие выплаты','Split model':'Модель распределения','Creator · MCN · Platform fee':'Автор · MCN · Комиссия платформы','Revenue trend':'Динамика дохода','Recent activity':'Последняя активность',
+ 'Revenue & Channels':'Доход и каналы','Visual avatars make channels easier to scan. Click any channel to open analytics.':'Визуальные логотипы помогают быстро находить каналы. Нажмите на канал, чтобы открыть аналитику.','Creator share':'Доля автора','Paid to author':'Выплачивается автору','MCN share':'Доля MCN','Network margin':'Маржа сети','Platform fee':'Комиссия платформы','NetworkPay service fee':'Комиссия NetworkPay','Search channel name or handle':'Поиск канала или @handle','All':'Все','Healthy':'В норме','Needs review':'Требует проверки','Open first channel':'Открыть первый канал','Revenue':'Доход','subscribers':'подписчиков','Review':'Проверка',
+ 'Wallet & Payouts':'Кошелёк и выплаты','Create, approve and inspect settlement analytics.':'Создавайте, подтверждайте и анализируйте выплаты.','Create payout':'Создать выплату','Production wallet':'Production кошелёк','Payout rails':'Способы выплат','Bank Transfer':'Банковский перевод','Multi-currency settlement':'Мультивалютный расчёт','Visa / Mastercard':'Visa / Mastercard','Card payout rail':'Выплата на карту','PayPal':'PayPal','Digital wallet payout':'Электронный кошелёк','USDT':'USDT','Digital asset rail':'Цифровой актив','Payout history':'История выплат','Amount':'Сумма','Method':'Способ','Status':'Статус','Created':'Создано','Analytics':'Аналитика','View breakdown':'Посмотреть расчёт',
+ 'Network entities':'Структура сети','Interactive MCN structure, integrations and settlement flow.':'Интерактивная структура MCN, интеграции и поток расчётов.','MCN entities':'MCN-компании','Active':'Активно','Live infrastructure':'Живая инфраструктура','YouTube revenue data':'Данные дохода YouTube','Channel & reporting connector':'Коннектор каналов и отчётности','NetworkPay API':'NetworkPay API','Revenue normalization & contracts':'Нормализация дохода и контракты','PostgreSQL ledger':'Реестр PostgreSQL','Audit-ready operational records':'Операционные записи для аудита','Settlement rails':'Платёжная инфраструктура','Bank · Card · Wallet · Digital asset':'Банк · Карта · Кошелёк · Цифровой актив','Open channels':'Открыть каналы','Open settlements':'Открыть выплаты','MCN entity':'MCN-компания','Managed channels':'Управляемые каналы','Estimated revenue':'Оценочный доход','Entity status':'Статус компании','Settlement model':'Модель расчётов',
+ 'Admin queue':'Очередь администратора','Interactive actions for payout approvals and completion.':'Действия для подтверждения и завершения выплат.','Approval queue':'Очередь подтверждения','Action':'Действие','Approve':'Подтвердить','Mark completed':'Завершить','active workflows':'активных процессов',
+ 'User cabinet':'Кабинет пользователя','Account summary and API connection details.':'Данные аккаунта и подключения API.','Sign out':'Выйти','Channels':'Каналы','Completed payouts':'Завершённые выплаты','Open wallet':'Открыть кошелёк','Account details':'Данные аккаунта','Verified':'Подтверждён','Role':'Роль','Workspace':'Рабочее пространство','Connected':'Подключено','Online':'Онлайн','Database':'База данных','Endpoint':'Адрес API',
+ 'Create payout':'Создать выплату','New payout request':'Новая заявка на выплату','Currency':'Валюта','MCN contract share':'Доля MCN по договору','Adjust according to the creator–MCN agreement. Creator share updates automatically.':'Настройте согласно договорённости автора и MCN. Доля автора пересчитывается автоматически.','NetworkPay platform fee: 3%':'Комиссия NetworkPay: 3%','Fixed by the platform and cannot be changed during payout.':'Фиксируется платформой и не может быть изменена при выводе.','Payout analytics':'Аналитика выплаты','Gross amount':'Общая сумма','Total gross revenue or payout amount':'Полная сумма дохода или выплаты','Creator gets':'Автор получает','MCN gets':'MCN получает','NetworkPay platform fee':'Комиссия платформы NetworkPay','Creator payout':'Выплата автору','MCN margin':'Маржа MCN','Net distributable after platform fee:':'К распределению после комиссии платформы:','Submit payout request':'Отправить заявку','Close':'Закрыть','Settlement analytics':'Аналитика расчёта','Payout breakdown':'Распределение выплаты','Channel detail':'Данные канала','Creator payable':'К выплате автору','Current channel revenue':'Текущий доход канала','Handle':'Handle','Subscribers':'Подписчики','Health':'Статус канала',
+ 'NetworkPay AI':'NetworkPay AI','AI Copilot':'AI-помощник','NetworkPay Assistant':'Ассистент NetworkPay','Explain $10k payout':'Объяснить выплату $10k','API status':'Статус API','Channels at risk':'Каналы с риском','Technical Support':'Техподдержка','AI finance copilot + support center':'AI-финансовый помощник + центр поддержки','API / Railway issue':'Проблема API / Railway','Payout issue':'Проблема выплаты','Create support ticket':'Создать обращение','Ticket created successfully. Status: Open.':'Обращение создано. Статус: Открыто.','Launching premium workspace…':'Запуск рабочего пространства…','Sync data':'Синхронизировать'
+ },
+ zh:{
+ 'Home':'首页','Revenue':'收入','Wallet':'钱包','Network':'网络','Admin':'管理','Profile':'个人资料',
+ 'Secure access':'安全登录','Sign in to your workspace':'登录您的工作区','Use the MCN owner account to enter the live browser demo.':'使用 MCN 所有者账户进入浏览器演示版。','Email':'邮箱','Password':'密码','Enter NetworkPay':'进入 NetworkPay','Demo credentials:':'演示账号：',
+ 'Premium browser demo':'高级浏览器演示','Track creators, channels and payouts with clear financial analytics.':'通过清晰的财务分析管理创作者、频道和付款。','Creator analytics':'创作者分析','Revenue split':'收入分成','Platform fee 3%':'平台费 3%','Production API':'生产 API','Settlement balance':'结算余额','Live wallet snapshot':'实时钱包余额','Connected channels':'已连接频道','Across active MCN entities':'覆盖所有活跃 MCN','Split logic':'分成逻辑','Creator · MCN · Platform':'创作者 · MCN · 平台',
+ 'Overview':'概览','A live operating view across revenue, balances and settlements.':'实时查看收入、余额和结算情况。','Production connected':'生产环境已连接','Monthly revenue':'月收入','Current reporting period':'当前报告周期','Available balance':'可用余额','Settlement wallet':'结算钱包','Pending payouts':'待处理付款','Split model':'分成模型','Creator · MCN · Platform fee':'创作者 · MCN · 平台费','Revenue trend':'收入趋势','Recent activity':'最近活动',
+ 'Revenue & Channels':'收入与频道','Visual avatars make channels easier to scan. Click any channel to open analytics.':'通过视觉化频道标识快速查找频道。点击任意频道查看分析。','Creator share':'创作者份额','Paid to author':'支付给创作者','MCN share':'MCN 份额','Network margin':'网络利润','Platform fee':'平台费','NetworkPay service fee':'NetworkPay 服务费','Search channel name or handle':'搜索频道名称或账号','All':'全部','Healthy':'正常','Needs review':'需要检查','Open first channel':'打开第一个频道','subscribers':'订阅者','Review':'检查',
+ 'Wallet & Payouts':'钱包与付款','Create, approve and inspect settlement analytics.':'创建、审批并查看结算分析。','Create payout':'创建付款','Production wallet':'生产钱包','Payout rails':'付款方式','Bank Transfer':'银行转账','Multi-currency settlement':'多币种结算','Visa / Mastercard':'Visa / Mastercard','Card payout rail':'银行卡付款','PayPal':'PayPal','Digital wallet payout':'电子钱包付款','USDT':'USDT','Digital asset rail':'数字资产付款','Payout history':'付款历史','Amount':'金额','Method':'方式','Status':'状态','Created':'创建时间','Analytics':'分析','View breakdown':'查看明细',
+ 'Network entities':'网络实体','Interactive MCN structure, integrations and settlement flow.':'交互式 MCN 架构、集成和结算流程。','MCN entities':'MCN 实体','Active':'活跃','Live infrastructure':'实时基础设施','YouTube revenue data':'YouTube 收入数据','Channel & reporting connector':'频道与报表连接器','NetworkPay API':'NetworkPay API','Revenue normalization & contracts':'收入标准化与合同','PostgreSQL ledger':'PostgreSQL 账本','Audit-ready operational records':'可审计运营记录','Settlement rails':'结算通道','Bank · Card · Wallet · Digital asset':'银行 · 卡 · 钱包 · 数字资产','Open channels':'打开频道','Open settlements':'打开结算','MCN entity':'MCN 实体','Managed channels':'管理频道','Estimated revenue':'预计收入','Entity status':'实体状态','Settlement model':'结算模型',
+ 'Admin queue':'管理队列','Interactive actions for payout approvals and completion.':'用于付款审批和完成的交互操作。','Approval queue':'审批队列','Action':'操作','Approve':'批准','Mark completed':'标记完成','active workflows':'个活跃流程',
+ 'User cabinet':'用户中心','Account summary and API connection details.':'账户摘要和 API 连接详情。','Sign out':'退出登录','Channels':'频道','Completed payouts':'已完成付款','Open wallet':'打开钱包','Account details':'账户详情','Verified':'已验证','Role':'角色','Workspace':'工作区','Connected':'已连接','Online':'在线','Database':'数据库','Endpoint':'API 地址',
+ 'New payout request':'新付款申请','Currency':'币种','MCN contract share':'MCN 合同分成','Adjust according to the creator–MCN agreement. Creator share updates automatically.':'根据创作者与 MCN 的协议调整，创作者分成会自动更新。','NetworkPay platform fee: 3%':'NetworkPay 平台费：3%','Fixed by the platform and cannot be changed during payout.':'平台费固定，提现时不可修改。','Payout analytics':'付款分析','Gross amount':'总金额','Total gross revenue or payout amount':'总收入或付款金额','Creator gets':'创作者所得','MCN gets':'MCN 所得','NetworkPay platform fee':'NetworkPay 平台费','Creator payout':'创作者付款','MCN margin':'MCN 收益','Net distributable after platform fee:':'扣除平台费后的可分配金额：','Submit payout request':'提交付款申请','Close':'关闭','Settlement analytics':'结算分析','Payout breakdown':'付款明细','Channel detail':'频道详情','Creator payable':'应付创作者','Current channel revenue':'当前频道收入','Handle':'账号','Subscribers':'订阅者','Health':'健康状态',
+ 'NetworkPay AI':'NetworkPay AI','AI Copilot':'AI 助手','NetworkPay Assistant':'NetworkPay 助手','Explain $10k payout':'解释 $10k 付款','API status':'API 状态','Channels at risk':'风险频道','Technical Support':'技术支持','AI finance copilot + support center':'AI 财务助手 + 支持中心','API / Railway issue':'API / Railway 问题','Payout issue':'付款问题','Create support ticket':'创建支持工单','Ticket created successfully. Status: Open.':'工单创建成功。状态：开放。','Launching premium workspace…':'正在启动工作区…','Sync data':'同步数据'
+ }
+};
+function tr(s){ if(currentLang==='en') return s; const d=TR[currentLang]||{}; return d[s]||s; }
+
+Object.assign(TR.ru,{
+ 'One secure workspace for MCN operations, channel management, settlements and creator payouts. Financial split details are shown only after authorized sign in.':'Единое защищённое пространство для работы MCN, управления каналами, расчётов и выплат авторам. Финансовые условия отображаются только после авторизации.',
+ 'MCN operations':'Операции MCN','Channel management':'Управление каналами','Global payouts':'Глобальные выплаты','Settlement workspace':'Расчётная платформа','Operational access':'Рабочий доступ','Currencies':'Валюты','Secure access':'Безопасный вход','Sync data':'Синхронизировать','Open profile':'Открыть профиль','MCN Owner':'Владелец MCN','Premium operations':'Премиальные операции','Production API':'Production API','Railway PostgreSQL online':'Railway PostgreSQL онлайн','Interactive browser demo':'Интерактивная браузерная демо-версия'
+});
+Object.assign(TR.zh,{
+ 'One secure workspace for MCN operations, channel management, settlements and creator payouts. Financial split details are shown only after authorized sign in.':'用于 MCN 运营、频道管理、结算和创作者付款的一体化安全工作区。财务分成信息仅在授权登录后显示。',
+ 'MCN operations':'MCN 运营','Channel management':'频道管理','Global payouts':'全球付款','Settlement workspace':'结算工作区','Operational access':'运营访问','Currencies':'币种','Secure access':'安全登录','Sync data':'同步数据','Open profile':'打开个人资料','MCN Owner':'MCN 所有者','Premium operations':'高级运营','Production API':'生产 API','Railway PostgreSQL online':'Railway PostgreSQL 在线','Interactive browser demo':'交互式浏览器演示'
+});
+
+Object.assign(TR.ru,{
+ 'Activity history':'История активности','Workspace history':'История рабочего пространства','All activity':'Вся активность','Payouts':'Выплаты','View full history':'Вся история','Activity details':'Детали операции','Open payout analytics':'Открыть аналитику выплаты','No activity found':'Активность не найдена','Recent activity':'Последняя активность'
+});
+Object.assign(TR.zh,{
+ 'Activity history':'活动历史','Workspace history':'工作区历史','All activity':'全部活动','Payouts':'付款','View full history':'查看全部历史','Activity details':'活动详情','Open payout analytics':'打开付款分析','No activity found':'未找到活动','Recent activity':'最近活动'
+});
+function translateDynamic(s){
+ if(currentLang==='en') return s;
+ let out=s;
+ const dict=TR[currentLang]||{};
+ if(dict[out]) return dict[out];
+ if(currentLang==='ru'){
+   out=out.replace(/(\\d+) requests awaiting approval/g,'$1 заявок ожидают подтверждения');
+   out=out.replace(/(\\d+) active workflows/g,'$1 активных процессов');
+   out=out.replace(/Active since /g,'Активно с ');
+   out=out.replace(/ channels$/g,' каналов');
+   out=out.replace(/^Method: /,'Способ: ');
+   out=out.replace(/(\d+)% of gross amount/g,'$1% от общей суммы');
+   out=out.replace(/(\d+)% network share/g,'$1% доля MCN');
+   out=out.replace(/(\d+)% NetworkPay fee/g,'$1% комиссия NetworkPay');
+ } else if(currentLang==='zh'){
+   out=out.replace(/(\\d+) requests awaiting approval/g,'$1 个申请等待审批');
+   out=out.replace(/(\\d+) active workflows/g,'$1 个活跃流程');
+   out=out.replace(/Active since /g,'启用时间 ');
+   out=out.replace(/ channels$/g,' 个频道');
+   out=out.replace(/^Method: /,'方式：');
+   out=out.replace(/(\d+)% of gross amount/g,'总额的 $1%');
+   out=out.replace(/(\d+)% network share/g,'MCN 分成 $1%');
+   out=out.replace(/(\d+)% NetworkPay fee/g,'NetworkPay 平台费 $1%');
+ }
+ return out;
+}
+const I18N_TEXT_SOURCE=new WeakMap();
+function applyTranslations(root=document){
+ document.documentElement.lang=currentLang==='zh'?'zh-CN':currentLang;
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(n){return n.parentElement && !['SCRIPT','STYLE'].includes(n.parentElement.tagName) && n.nodeValue.trim()?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT}});
+ const nodes=[]; while(walker.nextNode()) nodes.push(walker.currentNode);
+ nodes.forEach(n=>{
+   if(!I18N_TEXT_SOURCE.has(n)) I18N_TEXT_SOURCE.set(n,n.nodeValue);
+   const source=I18N_TEXT_SOURCE.get(n);
+   const lead=source.match(/^\s*/)[0], trail=source.match(/\s*$/)[0], core=source.trim();
+   n.nodeValue=lead+(currentLang==='en'?core:translateDynamic(core))+trail;
+ });
+ root.querySelectorAll?.('[placeholder]').forEach(el=>{
+   if(!el.dataset.i18nPlaceholder) el.dataset.i18nPlaceholder=el.getAttribute('placeholder')||'';
+   const source=el.dataset.i18nPlaceholder; el.placeholder=currentLang==='en'?source:translateDynamic(source);
+ });
+ root.querySelectorAll?.('[title]').forEach(el=>{
+   if(!el.dataset.i18nTitle) el.dataset.i18nTitle=el.getAttribute('title')||'';
+   const source=el.dataset.i18nTitle; el.title=currentLang==='en'?source:translateDynamic(source);
+ });
+ renderLanguagePickers();
+}
+function flagSvg(code){
+ if(code==='en') return `<svg viewBox="0 0 36 24" aria-hidden="true"><rect width="36" height="24" fill="#fff"/><g fill="#b22234"><rect y="0" width="36" height="2"/><rect y="4" width="36" height="2"/><rect y="8" width="36" height="2"/><rect y="12" width="36" height="2"/><rect y="16" width="36" height="2"/><rect y="20" width="36" height="2"/></g><rect width="16" height="13" fill="#3c3b6e"/><g fill="#fff"><circle cx="3" cy="3" r=".8"/><circle cx="7" cy="3" r=".8"/><circle cx="11" cy="3" r=".8"/><circle cx="3" cy="7" r=".8"/><circle cx="7" cy="7" r=".8"/><circle cx="11" cy="7" r=".8"/><circle cx="3" cy="11" r=".8"/><circle cx="7" cy="11" r=".8"/><circle cx="11" cy="11" r=".8"/></g></svg>`;
+ if(code==='ru') return `<svg viewBox="0 0 36 24" aria-hidden="true"><rect width="36" height="8" y="0" fill="#fff"/><rect width="36" height="8" y="8" fill="#0039a6"/><rect width="36" height="8" y="16" fill="#d52b1e"/></svg>`;
+ return `<svg viewBox="0 0 36 24" aria-hidden="true"><rect width="36" height="24" fill="#de2910"/><polygon fill="#ffde00" points="6,3 7.3,6.9 11.5,6.9 8.1,9.3 9.4,13.2 6,10.8 2.6,13.2 3.9,9.3 .5,6.9 4.7,6.9"/><circle cx="14" cy="4" r="1.1" fill="#ffde00"/><circle cx="17" cy="7" r="1.1" fill="#ffde00"/><circle cx="17" cy="11" r="1.1" fill="#ffde00"/><circle cx="14" cy="14" r="1.1" fill="#ffde00"/></svg>`;
+}
+function languagePickerHTML(){const l=LANGS[currentLang]; const short={en:'EN',ru:'RU',zh:'中文'}[currentLang]; return `<div class="lang-picker"><button class="lang-trigger" type="button" data-action="toggle-language" aria-label="Choose language"><span class="lang-flag">${flagSvg(currentLang)}</span><span class="lang-short">${short}</span><span class="lang-name">${l.name}</span><span class="lang-caret">▼</span></button><div class="lang-menu">${Object.entries(LANGS).map(([code,x])=>`<button class="lang-option ${code===currentLang?'active':''}" type="button" data-action="set-language" data-lang="${code}"><span class="lang-flag">${flagSvg(code)}</span><span>${x.name}</span><span class="lang-check">${code===currentLang?'✓':''}</span></button>`).join('')}</div></div>`}
+function renderLanguagePickers(){['languagePickerLogin','languagePickerTop'].forEach(id=>{const h=document.getElementById(id); if(h) h.innerHTML=languagePickerHTML()})}
+function setLanguage(code){if(!LANGS[code])return; currentLang=code; document.querySelectorAll('.lang-picker').forEach(x=>x.classList.remove('open')); if(state){renderAll()} applyTranslations(document); toast(currentLang==='ru'?'Язык изменён':currentLang==='zh'?'语言已切换':'Language changed',currentLang==='ru'?'Интерфейс полностью переключён на русский.':currentLang==='zh'?'界面已切换为中文。':'Interface switched to English.');}
+
+let token=''; let user=null,state=null,currentPage='home',channelFilter='all';
+const NAV_ITEMS=[['home','Home',iconHome()],['revenue','Revenue',iconRevenue()],['wallet','Wallet',iconWallet()],['network','Network',iconNetwork()],['admin','Admin',iconShield()],['profile','Profile',iconUser()]];
+const CHANNEL_ART={ 'Northvale Studio':logoNorthvale, 'Echo Harbor':logoEchoHarbor, 'Blue Lantern':logoBlueLantern, 'Redwood Frame':logoRedwoodFrame, 'Urban Nest':logoUrbanNest, 'Silver Cloud':logoSilverCloud, 'Brightline Works':logoBrightlineWorks, 'Cobalt House':logoCobaltHouse, 'Aurora Stage':logoAurora, 'Velocity Arena':logoVelocity, 'Meridian Pulse':logoMeridian, 'Solvexa Vision':logoSolvexa, 'Kairox Collective':logoKairox, 'Signal Harbor':logoSignal, 'Wildframe Lab':logoWildframe };
+function iconHome(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5.2v-6.1H9.2V20.5H4a1 1 0 0 1-1-1z"/></svg>`} function iconRevenue(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V10M10 19V5M16 19v-8M22 19H2"/></svg>`} function iconWallet(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M16 11h5v4h-5a2 2 0 0 1 0-4zM7 6V4h9"/></svg>`} function iconNetwork(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M12 7v5M12 12 6 16M12 12l6 4"/></svg>`} function iconShield(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4.5 6v6.4c0 4.7 2.8 7.5 7.5 8.6 4.7-1.1 7.5-3.9 7.5-8.6V6z"/><path d="m8.8 12 2.1 2.1 4.3-4.3"/></svg>`} function iconUser(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4.5 20c1.4-4.3 4-6 7.5-6s6.1 1.7 7.5 6"/></svg>`}
+function logoNorthvale(){return `<div class="channel-logo" style="background:linear-gradient(145deg,#79f2c6,#22b693)"><svg viewBox="0 0 64 64"><path fill="#fff" d="M14 20v24l18-12 18 12V20L32 32z"/></svg></div>`}
+function logoEchoHarbor(){return `<div class="channel-logo" style="background:linear-gradient(145deg,#a78bff,#6279ff)"><svg viewBox="0 0 64 64"><path fill="#fff" d="M13 37c8 0 8-10 16-10s8 10 16 10 8-10 16-10c-1 13-11 23-24 23S14 45 13 37Z"/></svg></div>`}
+function logoBlueLantern(){return `<div class="channel-logo" style="background:linear-gradient(145deg,#8e92ff,#5b6dff)"><svg viewBox="0 0 64 64"><path fill="#fff" d="M28 14h8l3 7h6l-4 7v13H23V28l-4-7h6z"/><rect x="25" y="42" width="14" height="4" fill="#fff"/></svg></div>`}
+function logoRedwoodFrame(){return `<div class="channel-logo" style="background:linear-gradient(145deg,#ffad73,#ff6d55)"><svg viewBox="0 0 64 64"><rect x="17" y="18" width="30" height="28" rx="6" fill="#fff"/><rect x="24" y="24" width="16" height="16" rx="3" fill="#ff7e60"/></svg></div>`}
+function logoUrbanNest(){return `<div class="channel-logo" style="background:linear-gradient(145deg,#6ce0c4,#27b3a7)"><svg viewBox="0 0 64 64"><path fill="#fff" d="m14 34 18-15 18 15v12H36V35H28v11H14z"/></svg></div>`}
+function logoSilverCloud(){return `<div class="channel-logo" style="background:linear-gradient(145deg,#d4d9e6,#99a5c9)"><svg viewBox="0 0 64 64"><path fill="#fff" d="M25 46c-6 0-11-4-11-10 0-5 4-9 9-10 2-7 8-11 15-11 8 0 14 6 14 14v1c4 1 7 5 7 9 0 5-4 8-9 8H25Z"/></svg></div>`}
+function logoBrightlineWorks(){return `<div class="channel-logo" style="background:linear-gradient(145deg,#ffd66f,#ff9f42)"><svg viewBox="0 0 64 64"><path fill="#fff" d="M31 11 18 33h10l-3 20 21-28H36l6-14z"/></svg></div>`}
+function logoCobaltHouse(){return `<div class="channel-logo" style="background:linear-gradient(145deg,#6cb5ff,#2b79ff)"><svg viewBox="0 0 64 64"><path fill="#fff" d="m16 25 16-10 16 10v15L32 49 16 40z"/><path fill="#2b79ff" d="m32 23 8 5v9l-8 5-8-5v-9z"/></svg></div>`}
+function logoAurora(){return `<div class="channel-logo" style="background:linear-gradient(145deg,#a075ff,#5f84ff)"><svg viewBox="0 0 64 64"><path fill="#fff" d="M12 45c8-20 14-29 20-29 5 0 7 8 13 8 3 0 5-2 7-5-1 11-7 29-20 29-8 0-10-7-15-7-3 0-6 1-5 4Z"/></svg></div>`}
+function logoVelocity(){return `<div class="channel-logo" style="background:linear-gradient(145deg,#ff8d72,#ff4f7f)"><svg viewBox="0 0 64 64"><path fill="#fff" d="M11 32h16l8-13 18 0-15 26H22z"/></svg></div>`}
+function logoMeridian(){return `<div class="channel-logo" style="background:linear-gradient(145deg,#6cb5ff,#3275ff)"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="17" fill="#fff"/><path d="M32 15v34M15 32h34" stroke="#3275ff" stroke-width="5"/></svg></div>`}
+function logoSolvexa(){return `<div class="channel-logo" style="background:linear-gradient(145deg,#ffd36f,#ff8e4f)"><svg viewBox="0 0 64 64"><path fill="#fff" d="M18 46 32 18l14 28H18Zm14-9 4 0-4-8-4 8z"/></svg></div>`}
+function logoKairox(){return `<div class="channel-logo" style="background:linear-gradient(145deg,#00d0ff,#0079ff)"><svg viewBox="0 0 64 64"><path fill="#fff" d="M14 18h10v12l12-12h14L36 32l14 14H36L24 34v12H14z"/></svg></div>`}
+function logoSignal(){return `<div class="channel-logo" style="background:linear-gradient(145deg,#77f1b1,#35cdd0)"><svg viewBox="0 0 64 64"><path fill="#fff" d="M20 42a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm12 4a12 12 0 1 0 0-24 12 12 0 0 0 0 24Zm12 4a20 20 0 1 0 0-40 20 20 0 0 0 0 40Z"/></svg></div>`}
+function logoWildframe(){return `<div class="channel-logo" style="background:linear-gradient(145deg,#ff77d8,#a075ff)"><svg viewBox="0 0 64 64"><path fill="#fff" d="M17 19h30v26H17zm5 5v16h20V24zm4 2h12v12H26z"/></svg></div>`}
+function getChannelLogo(name){return (CHANNEL_ART[name]||logoAurora)()}
+function money(v,c='USD'){
+  const n=Number(v||0);
+  if(['USDT','USDC'].includes(c)) return `${new Intl.NumberFormat('en-US',{maximumFractionDigits:2}).format(n)} ${c}`;
+  if(['BTC','ETH'].includes(c)) return `${new Intl.NumberFormat('en-US',{maximumFractionDigits:8}).format(n)} ${c}`;
+  return new Intl.NumberFormat('en-US',{style:'currency',currency:c,maximumFractionDigits:0}).format(n);
+}
+function pct(n){return `${n}%`} function formatRole(role){return String(role||'user').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}
+function toast(title,text,type='ok'){const w=document.getElementById('toastWrap'); const el=document.createElement('div'); el.className='toast'+(type==='err'?' err':''); el.innerHTML=`<div class="toast-icon">${type==='err'?'!':'✓'}</div><div><b>${title}</b><p>${text}</p></div>`; w.appendChild(el); setTimeout(()=>el.remove(),3300)}
+function setLoading(btn,on){if(btn) btn.classList.toggle('loading',!!on)}
+async function api(path,opt={}){const headers={'Content-Type':'application/json',...(opt.headers||{})}; if(token) headers.Authorization='Bearer '+token; const res=await fetch(API+path,{...opt,headers}); let data={}; try{data=await res.json()}catch(e){} if(!res.ok) throw new Error(data.error||`HTTP ${res.status}`); return data;}
+function calcBreakdown(total,mcnRate=payoutMcnRate){ total=Number(total||0); const safeMcn=Math.max(0,Math.min(50,Number(mcnRate||0))); const platformRate=SPLIT.platform; const creatorRate=Math.max(0,100-platformRate-safeMcn); const platform=round2(total*platformRate/100); const mcn=round2(total*safeMcn/100); const creator=round2(total*creatorRate/100); const distributable=round2(total-platform); return {total, platform, mcn, creator, distributable, mcnRate:safeMcn, platformRate, creatorRate}; }
+function round2(n){ return Math.round(Number(n||0)*100)/100; }
+function renderBreakdownCards(amount,currency='USD'){
+ const b=calcBreakdown(amount);
+ return `<div class="split-grid"><div class="split-card"><div class="title">Gross amount</div><div class="amount">${money(b.total,currency)}</div><div class="desc">Total gross revenue or payout amount</div></div><div class="split-card"><div class="title">Creator gets</div><div class="amount">${money(b.creator,currency)}</div><div class="desc">${pct(b.creatorRate)} of gross amount</div></div><div class="split-card"><div class="title">MCN gets</div><div class="amount">${money(b.mcn,currency)}</div><div class="desc">${pct(b.mcnRate)} network share</div></div><div class="split-card"><div class="title">Platform fee</div><div class="amount">${money(b.platform,currency)}</div><div class="desc">${pct(b.platformRate)} NetworkPay fee</div></div></div><div class="progress-stack"><div class="stack-bar"><div class="seg creator" style="width:${b.creatorRate}%"></div><div class="seg mcn" style="width:${b.mcnRate}%"></div><div class="seg platform" style="width:${b.platformRate}%"></div></div><div class="stack-legend"><div class="legend-row"><span class="legend-chip" style="background:#54e2a7"></span><span>Creator payout</span><b>${money(b.creator,currency)}</b></div><div class="legend-row"><span class="legend-chip" style="background:#5a97ff"></span><span>MCN margin</span><b>${money(b.mcn,currency)}</b></div><div class="legend-row"><span class="legend-chip" style="background:#ffb85b"></span><span>NetworkPay platform fee</span><b>${money(b.platform,currency)}</b></div></div><div class="subtle" style="margin-top:10px">Net distributable after platform fee: <b style="color:#fff">${money(b.distributable,currency)}</b></div></div>`;
+}
+async function doLogin(){const email=document.getElementById('email').value.trim(); const password=document.getElementById('password').value; if(!email || !password){toast('Sign in required','Enter your email and password.','err'); return;} const btn=document.getElementById('loginBtn'); setLoading(btn,true); try{const d=await api('/api/auth/login',{method:'POST',body:JSON.stringify({email,password})}); token=d.token; user=d.user;  await bootstrap(); currentPage='home'; showApp(); navigate('home'); toast('Welcome','Workspace loaded successfully.');}catch(e){const msg=e.message==='invalid_credentials'?'The email or password is incorrect.':e.message; toast('Could not sign in',msg,'err')}finally{setLoading(btn,false)}}
+async function bootstrap(){const d=await api('/api/bootstrap'); user=d.user; state=d.state; renderAll();}
+function showApp(){document.getElementById('login').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); document.getElementById('workspaceName').textContent='Asteron Group'; document.getElementById('roleText').textContent=formatRole(user?.role); navigate(currentPage||'home')}
+function logout(){token=''; user=null; state=null;  document.getElementById('app').classList.add('hidden'); document.getElementById('login').classList.remove('hidden'); toast('Signed out','You have left the workspace.')}
+function renderNav(){const allowed=NAV_ITEMS.filter(([id])=>id!=='admin' || ['admin','finance'].includes(user?.role)); const desktop=document.getElementById('desktopNav'); const mobile=document.getElementById('mobileNav'); desktop.innerHTML=allowed.map(([id,label,icon])=>`<button class="nav-btn ${currentPage===id?'active':''}" data-action="navigate" data-target="${id}"><span class="nav-icon">${icon}</span><span>${label}</span></button>`).join(''); mobile.innerHTML=allowed.slice(0,5).map(([id,label,icon])=>`<button class="${currentPage===id?'active':''}" data-action="navigate" data-target="${id}"><span class="nav-icon">${icon}</span><span>${label}</span></button>`).join(''); }
+function navigate(id){ currentPage=id; document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+id)); document.querySelectorAll('[data-action="navigate"]').forEach(b=>b.classList.toggle('active',b.dataset.target===id)); }
+function entityLogo(i){
+ const icons=[
+  '<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="15" fill="none" stroke="currentColor" stroke-width="3"/><path d="M9 24h30M24 9c5 5 7 10 7 15s-2 10-7 15M24 9c-5 5-7 10-7 15s2 10 7 15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>',
+  '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="10" y="13" width="28" height="22" rx="5" fill="none" stroke="currentColor" stroke-width="3"/><path d="M15 18h18M15 24h12M15 30h8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>',
+  '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M26 7 12 27h10l-2 14 16-23H25z" fill="currentColor"/></svg>',
+  '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 8 40 24 24 40 8 24z" fill="currentColor"/><path d="M24 16 32 24 24 32 16 24z" fill="#0c111b"/></svg>',
+  '<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="15" fill="none" stroke="currentColor" stroke-width="3"/><path d="m24 13 3.2 7.8 8.3.7-6.3 5.4 2 8.1-7.2-4.3-7.2 4.3 2-8.1-6.3-5.4 8.3-.7z" fill="currentColor"/></svg>'
+ ];
+ return icons[i%icons.length];
+}
+function renderAll(){ if(!state) return; renderNav(); renderHome(); renderRevenue(); renderWallet(); renderNetwork(); renderAdmin(); renderProfile(); navigate(currentPage); queueMicrotask(()=>applyTranslations(document)); }
+function renderHome(){const monthly=state.monthlyRevenue||0,balance=state.balance||0,pendingAmount=state.payouts.filter(p=>p.status==='Pending').reduce((s,p)=>s+Number(p.amount||0),0),channels=state.channels.length; document.getElementById('page-home').innerHTML=`<div class="page-head"><div><div class="h2">Overview</div><p>A live operating view across revenue, balances and settlements.</p></div><span class="pill success">Production connected</span></div><div class="grid kpis"><div class="card kpi clickable" data-action="navigate" data-target="revenue"><div class="label">Monthly revenue</div><div class="value">${money(monthly)}</div><div class="meta">Current reporting period</div></div><div class="card kpi clickable" data-action="navigate" data-target="wallet"><div class="label">Available balance</div><div class="value">${money(balance)}</div><div class="meta">Settlement wallet</div></div><div class="card kpi clickable" data-action="navigate" data-target="${(demoPerspective==='admin'||user?.role==='admin'||user?.role==='finance')?'admin':'wallet'}"><div class="label">Pending payouts</div><div class="value">${money(pendingAmount)}</div><div class="meta">${state.payouts.filter(p=>p.status==='Pending').length} requests awaiting approval</div></div><div class="card kpi clickable" data-action="open-overview-analytics"><div class="label">Split model</div><div class="value">67 / 30 / 3</div><div class="meta">Creator · MCN · Platform fee</div></div></div><div class="grid two" style="margin-top:16px"><div class="card"><div class="section-title">Revenue trend</div><div class="chart">${[48,61,55,72,68,86,79,91,83,99,89,95].map(h=>`<div class="bar" style="height:${h}%"></div>`).join('')}</div><div class="legend"><span>Jan</span><span>Mar</span><span>May</span><span>Jul</span><span>Sep</span><span>Nov</span></div></div><div class="card"><div class="activity-headline"><div class="section-title" style="margin-bottom:0">Recent activity</div><button class="btn secondary small activity-history-btn" data-action="open-history">View full history</button></div><div class="activity">${state.activity.slice(0,6).map((a,i)=>`<div class="activity-row interactive" data-action="open-activity" data-index="${i}"><div class="activity-main"><div class="activity-title">${a.text}</div><div class="activity-time">${a.time}</div></div><div class="activity-right"><div class="activity-amount">${a.amount||''}</div><span class="activity-chevron">→</span></div></div>`).join('')}</div></div></div>`; }
+function renderRevenue(){ document.getElementById('page-revenue').innerHTML=`<div class="page-head"><div><div class="h2">Revenue & Channels</div><p>Visual avatars make channels easier to scan. Click any channel to open analytics.</p></div><span class="pill info">Split ${SPLIT.creator}/${SPLIT.mcn}/${SPLIT.platform}</span></div><div class="grid three"><div class="card kpi"><div class="label">Creator share</div><div class="value">${SPLIT.creator}%</div><div class="meta">Paid to author</div></div><div class="card kpi"><div class="label">MCN share</div><div class="value">${SPLIT.mcn}%</div><div class="meta">Network margin</div></div><div class="card kpi"><div class="label">Platform fee</div><div class="value">${SPLIT.platform}%</div><div class="meta">NetworkPay service fee</div></div></div><div class="card" style="margin-top:16px"><div class="toolbar"><input id="channelSearch" class="input search" placeholder="Search channel name or handle"><button class="chip ${channelFilter==='all'?'active':''}" data-action="channel-filter" data-filter="all">All</button><button class="chip ${channelFilter==='healthy'?'active':''}" data-action="channel-filter" data-filter="healthy">Healthy</button><button class="chip ${channelFilter==='review'?'active':''}" data-action="channel-filter" data-filter="review">Needs review</button><button class="btn secondary small" data-action="open-all-channels">Open first channel</button></div><div class="channel-grid" id="channelGrid">${renderChannelCards()}</div></div>`; const s=document.getElementById('channelSearch'); if(s) s.addEventListener('input',filterChannelCards); }
+function renderChannelCards(){ let arr=[...state.channels]; if(channelFilter==='healthy') arr=arr.filter(c=>String(c.health).toLowerCase()==='healthy'); if(channelFilter==='review') arr=arr.filter(c=>String(c.health).toLowerCase()!=='healthy'); return arr.map(c=>`<div class="channel-card" data-action="open-channel" data-id="${c.id}" data-search="${(c.name+' '+c.handle).toLowerCase()}">${getChannelLogo(c.name)}<div><div class="channel-name">${c.name}</div><div class="channel-sub">${c.handle} · ${Number(c.subs||0).toLocaleString()} subscribers</div><div class="channel-sub">${c.health}</div></div><div class="channel-rev"><b>${money(c.revenue)}</b><span>Revenue</span></div></div>`).join(''); }
+function filterChannelCards(){ const q=(document.getElementById('channelSearch')?.value||'').toLowerCase(); document.querySelectorAll('.channel-card').forEach(c=>{c.style.display=c.dataset.search.includes(q)?'grid':'none'}) }
+function renderWallet(){
+ const payoutRows=state.payouts.map(p=>`<tr><td><b>${p.id}</b></td><td>${money(p.amount,p.currency)} ${p.currency}</td><td>${p.method}</td><td><span class="pill ${p.status==='Pending'?'warning':p.status==='Processing'?'info':'success'}">${p.status}</span></td><td class="muted">${p.created}</td><td><button class="btn secondary small" data-action="open-payout-analytics" data-id="${p.id}">View breakdown</button></td></tr>`).join('');
+ const payoutCards=state.payouts.map(p=>`<article class="mobile-payout-card">
+   <div class="mp-head"><div><span class="mp-label">Payout</span><b>${p.id}</b></div><span class="pill ${p.status==='Pending'?'warning':p.status==='Processing'?'info':'success'}">${p.status}</span></div>
+   <div class="mp-amount">${money(p.amount,p.currency)} <small>${p.currency}</small></div>
+   <div class="mp-grid"><div><span>Method</span><b>${p.method}</b></div><div><span>Created</span><b>${p.created}</b></div></div>
+   <button class="btn secondary mp-action" data-action="open-payout-analytics" data-id="${p.id}">View payout details</button>
+ </article>`).join('');
+ document.getElementById('page-wallet').innerHTML=`<div class="page-head"><div><div class="h2">Wallet & Payouts</div><p>Create and inspect your settlement requests.</p></div><button class="btn primary" data-action="open-payout">Create payout</button></div><div class="grid two"><div class="card kpi"><div class="label">Settlement balance</div><div class="value">${money(state.balance)}</div><div class="meta">Production wallet</div></div><div class="card"><div class="section-title">Payout rails</div><div class="rails"><div class="rail" data-action="open-payout" data-method="Bank Transfer"><div class="rail-logo"><div style="width:30px;height:30px;border-radius:12px;background:linear-gradient(145deg,#6cb5ff,#71f1bb)"></div></div><div class="rail-copy"><b>Bank Transfer</b><span>Multi-currency settlement</span></div></div><div class="rail" data-action="open-payout" data-method="Visa/Mastercard"><div class="rail-logo"><span class="visa">VISA</span><span class="mc"><i></i><i></i></span></div><div class="rail-copy"><b>Visa / Mastercard</b><span>Card payout rail</span></div></div><div class="rail" data-action="open-payout" data-method="PayPal"><div class="rail-logo"><span class="paypal">PayPal</span></div><div class="rail-copy"><b>PayPal</b><span>Digital wallet payout</span></div></div><div class="rail" data-action="open-payout" data-method="USDT"><div class="rail-logo"><span class="usdt">₮ Tether</span></div><div class="rail-copy"><b>USDT / USDC / BTC / ETH</b><span>Crypto assets</span></div></div></div></div></div><div class="card payout-history-card" style="margin-top:16px"><div class="section-title">Payout history</div><div class="desktop-payout-table table-wrap"><table class="table"><thead><tr><th>ID</th><th>Amount</th><th>Method</th><th>Status</th><th>Created</th><th>Analytics</th></tr></thead><tbody>${payoutRows}</tbody></table></div><div class="mobile-payout-list">${payoutCards}</div></div>`;
+}
+function renderNetwork(){
+ document.getElementById('page-network').innerHTML=`
+ <div class="page-head"><div><div class="h2">Network entities</div><p>Interactive MCN structure, integrations and settlement flow.</p></div><span class="pill ${state.youtubeConnected?'success':'warning'}"><span class="pulse"></span>${state.youtubeConnected?'YouTube connected':'Pilot connector'}</span></div>
+ <div class="network-stage">
+  <div class="card"><div class="section-title">MCN entities</div><div class="entity-list">${state.mcns.map((m,i)=>`<div class="entity interactive" data-action="open-entity" data-index="${i}"><div class="entity-icon v6">${entityLogo(i)}</div><div><div class="entity-title">${m.name}</div><div class="entity-sub">${m.country} · ${m.currency} · Active since ${String(m.since).slice(0,10)}</div></div><div class="entity-status"><span class="pill info">Active</span><span class="entity-arrow">→</span></div></div>`).join('')}</div></div>
+  <div class="card flow-card"><div class="section-title">Live infrastructure</div><div class="flow"><div class="flow-node"><div class="flow-ico">▶</div><div><div class="flow-title">YouTube revenue data</div><div class="flow-sub">Channel & reporting connector</div></div><span class="flow-badge">READY</span></div><div class="flow-node"><div class="flow-ico">API</div><div><div class="flow-title">NetworkPay API</div><div class="flow-sub">Revenue normalization & contracts</div></div><span class="flow-badge">LIVE</span></div><div class="flow-node"><div class="flow-ico">DB</div><div><div class="flow-title">PostgreSQL ledger</div><div class="flow-sub">Audit-ready operational records</div></div><span class="flow-badge">ONLINE</span></div><div class="flow-node"><div class="flow-ico">$</div><div><div class="flow-title">Settlement rails</div><div class="flow-sub">Bank · Card · Wallet · Digital asset</div></div><span class="flow-badge">4 RAILS</span></div></div><button class="btn primary full" data-action="youtube">${state.youtubeConnected?'Sync pilot data':'Authorize pilot connector'}</button><div class="exec-note">Every block is interactive for the demo: open an MCN entity, inspect its financial split, move to channel analytics, or test settlement workflows.</div></div>
+ </div>`;
+}
+function renderAdmin(){
+ const page=document.getElementById('page-admin');
+ const roleForAdmin=demoPerspective==='admin'?'admin':user?.role;
+ if(!['admin','finance'].includes(roleForAdmin)){
+   page.innerHTML=`<div class="page-head"><div><div class="h2">Admin access</div><p>Approval controls are separated from the MCN owner workspace.</p></div></div><div class="card access-card"><div class="access-lock">🔒</div><div class="section-title">Administrator permission required</div><p class="p">MCN owners and creators can create and track payout requests, but they cannot approve their own withdrawals. Approval is available only to authorized NetworkPay admin/finance roles.</p><button class="btn secondary" data-action="navigate" data-target="wallet">Back to Wallet</button></div>`;
+   return;
+ }
+ const queue=state.payouts.filter(p=>p.status==='Pending'||p.status==='Processing');
+ const rows=queue.map(p=>`<tr><td><b>${p.id}</b></td><td>${money(p.amount,p.currency)}</td><td>${p.method}</td><td><span class="pill ${p.status==='Pending'?'warning':'info'}">${p.status}</span></td><td>${p.status==='Pending'?`<button class="btn primary small" data-action="update-status" data-id="${p.id}" data-status="Processing">Approve</button>`:`<button class="btn secondary small" data-action="update-status" data-id="${p.id}" data-status="Completed">Mark completed</button>`}</td></tr>`).join('');
+ const cards=queue.map(p=>`<article class="mobile-admin-card"><div class="ma-top"><div><span class="mp-label">Request</span><b>${p.id}</b></div><span class="pill ${p.status==='Pending'?'warning':'info'}">${p.status}</span></div><div class="ma-amount">${money(p.amount,p.currency)}</div><div class="mp-grid"><div><span>Method</span><b>${p.method}</b></div><div><span>Role</span><b>Admin approval</b></div></div>${p.status==='Pending'?`<button class="btn primary ma-action" data-action="update-status" data-id="${p.id}" data-status="Processing">Approve payout</button>`:`<button class="btn secondary ma-action" data-action="update-status" data-id="${p.id}" data-status="Completed">Mark completed</button>`}</article>`).join('');
+ page.innerHTML=`<div class="page-head"><div><div class="h2">Admin queue</div><p>Authorized approval workflow. This area is not visible to creators or MCN owners.</p></div><span class="pill warning">${queue.length} active workflows</span></div><div class="card"><div class="section-title">Approval queue</div><div class="desktop-admin-table table-wrap"><table class="table"><thead><tr><th>ID</th><th>Amount</th><th>Method</th><th>Status</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table></div><div class="mobile-admin-list">${cards}</div></div>`;
+}
+function renderProfile(){ const completed=state.payouts.filter(p=>p.status==='Completed').length; document.getElementById('page-profile').innerHTML=`<div class="page-head"><div><div class="h2">User cabinet</div><p>Account summary and API connection details.</p></div><button class="btn warn" data-action="logout">Sign out</button></div><div class="card"><div class="user-grid"><div class="user-photo"><svg viewBox="0 0 160 160"><defs><linearGradient id="skinG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffd7c5"/><stop offset="100%" stop-color="#ffb79f"/></linearGradient><linearGradient id="hairG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2a1a22"/><stop offset="100%" stop-color="#140d13"/></linearGradient></defs><rect width="160" height="160" rx="38" fill="#101823"/><circle cx="80" cy="64" r="28" fill="url(#skinG)"/><path d="M45 154c8-33 25-49 35-49 11 0 28 16 35 49Z" fill="#5fe0b5"/><path d="M49 60c0-24 15-40 37-40 23 0 38 14 38 41-9-8-24-16-38-16-11 0-25 6-37 15Z" fill="url(#hairG)"/><path d="M52 60c1 10 5 16 10 21-6-1-11-6-13-16-2-10 0-18 2-24z" fill="url(#hairG)"/><path d="M107 82c4-4 8-12 9-24 5 11 6 28-2 39-2-5-4-9-7-15z" fill="url(#hairG)"/><circle cx="69" cy="64" r="3.2" fill="#3b2a33"/><circle cx="92" cy="64" r="3.2" fill="#3b2a33"/><path d="M72 82c6 6 14 6 20 0" stroke="#d67478" stroke-width="4" stroke-linecap="round" fill="none"/></svg></div><div><div class="h2" style="font-size:clamp(30px,3vw,46px)">Akbota Salgaraeva</div><div class="p" style="font-size:13px;margin:6px 0 0">${formatRole(user?.role)} · Asteron Group</div><div class="user-stats"><div class="user-stat"><b>${state.channels.length}</b><span>Channels</span></div><div class="user-stat"><b>${state.mcns.length}</b><span>MCN entities</span></div><div class="user-stat"><b>${completed}</b><span>Completed payouts</span></div></div><div class="row-actions"><button class="btn secondary small" data-action="navigate" data-target="revenue">Open channels</button><button class="btn primary small" data-action="navigate" data-target="wallet">Open wallet</button></div></div></div></div><div class="grid two" style="margin-top:16px"><div class="card"><div class="section-title">Account details</div><div class="profile-list"><div class="profile-row"><div><div class="profile-key">Email</div><div class="profile-value">${user?.email||''}</div></div><span class="pill success">Verified</span></div><div class="profile-row"><div><div class="profile-key">Role</div><div class="profile-value">${formatRole(user?.role)}</div></div></div><div class="profile-row"><div><div class="profile-key">Workspace</div><div class="profile-value">Asteron Group</div></div></div></div></div><div class="card"><div class="section-title">Production API</div><div class="profile-list"><div class="profile-row"><div><div class="profile-key">Status</div><div class="profile-value">Connected</div></div><span class="pill success">Online</span></div><div class="profile-row"><div><div class="profile-key">Database</div><div class="profile-value">Railway PostgreSQL</div></div></div><div class="profile-row"><div><div class="profile-key">Endpoint</div><div class="profile-value">${API}</div></div></div></div></div></div>`; }
+function openModal(id){document.getElementById(id).classList.add('show')} function closeModal(id){document.getElementById(id).classList.remove('show')}
+
+const CURRENCY_OPTIONS=[
+  {value:'USD',label:'US Dollar',icon:'$',cls:'currency-usd',meta:'USD'},
+  {value:'EUR',label:'Euro',icon:'€',cls:'currency-eur',meta:'EUR'},
+  {value:'CNY',label:'Chinese Yuan',icon:'¥',cls:'currency-cny',meta:'CNY'},
+  {value:'GBP',label:'British Pound',icon:'£',cls:'currency-gbp',meta:'GBP'},
+  {value:'KRW',label:'Korean Won',icon:'₩',cls:'currency-krw',meta:'KRW'},
+  {value:'JPY',label:'Japanese Yen',icon:'¥',cls:'currency-jpy',meta:'JPY'}
+];
+const METHOD_OPTIONS=[
+  {value:'Bank Transfer',label:'Bank Transfer',icon:'🏦',cls:'pay-bank',meta:'Multi-currency'},
+  {value:'Visa/Mastercard',label:'Visa / Mastercard',icon:'VISA',cls:'pay-visa',meta:'Card payout'},
+  {value:'PayPal',label:'PayPal',icon:'P',cls:'pay-paypal',meta:'E-wallet'},
+  {value:'USDT',label:'USDT',icon:'₮',cls:'pay-usdt',meta:'Digital asset'}
+];
+function pickerOptionHtml(o,selected){
+  const icon = o.value==='Visa/Mastercard' ? `<span class="picker-icon"><span class="pay-brand ${o.cls}">VISA</span></span>` : o.value==='PayPal' ? `<span class="picker-icon"><span class="pay-brand ${o.cls}">P</span></span>` : `<span class="picker-icon ${o.cls||''}">${o.icon}</span>`;
+  return `<button type="button" class="picker-option ${selected?'selected':''}" data-pick-value="${o.value}">${icon}<span>${o.label}</span><span class="meta">${o.meta}</span></button>`;
+}
+function renderPicker(kind){
+  const isCurrency=kind==='currency'; const input=document.getElementById(isCurrency?'payoutCurrency':'payoutMethod'); const opts=isCurrency?CURRENCY_OPTIONS:METHOD_OPTIONS; const current=document.getElementById(isCurrency?'currencyCurrent':'methodCurrent'); const menu=document.getElementById(isCurrency?'currencyMenu':'methodMenu'); if(!input||!current||!menu) return;
+  const item=opts.find(o=>o.value===input.value)||opts[0];
+  const icon = item.value==='Visa/Mastercard' ? `<span class="picker-icon"><span class="pay-brand ${item.cls}">VISA</span></span>` : item.value==='PayPal' ? `<span class="picker-icon"><span class="pay-brand ${item.cls}">P</span></span>` : `<span class="picker-icon ${item.cls||''}">${item.icon}</span>`;
+  current.innerHTML=`${icon}<span>${item.label}</span>`;
+  menu.innerHTML=opts.map(o=>pickerOptionHtml(o,o.value===input.value)).join('');
+}
+function initPickers(){ renderPicker('currency'); renderPicker('method'); }
+function togglePicker(kind){
+  const isCurrency=kind==='currency'; const menu=document.getElementById(isCurrency?'currencyMenu':'methodMenu'); const trigger=document.querySelector(`[data-picker="${kind}"]`); const otherKind=isCurrency?'method':'currency'; const otherMenu=document.getElementById(isCurrency?'methodMenu':'currencyMenu'); const otherTrigger=document.querySelector(`[data-picker="${otherKind}"]`);
+  if(otherMenu) otherMenu.classList.remove('show'); if(otherTrigger) otherTrigger.classList.remove('open');
+  if(menu){ const open=!menu.classList.contains('show'); menu.classList.toggle('show',open); if(trigger) trigger.classList.toggle('open',open); }
+}
+function choosePicker(kind,value){ const id=kind==='currency'?'payoutCurrency':'payoutMethod'; const input=document.getElementById(id); if(input) input.value=value; renderPicker(kind); const menu=document.getElementById(kind==='currency'?'currencyMenu':'methodMenu'); const trigger=document.querySelector(`[data-picker="${kind}"]`); if(menu) menu.classList.remove('show'); if(trigger) trigger.classList.remove('open'); renderPayoutSplitPreview(); }
+function renderPayoutSplitPreview(){ const amount=Number(document.getElementById('payoutAmount')?.value||0); const currency=document.getElementById('payoutCurrency')?.value||'USD'; const box=document.getElementById('payoutSplitPreview'); if(box) box.innerHTML=`<div class="section-title" style="margin-top:16px">Payout analytics</div>${renderBreakdownCards(amount,currency)}`; if(box) applyTranslations(box); }
+function updateMcnRate(rate){ payoutMcnRate=Math.max(0,Math.min(50,Number(rate||0))); const slider=document.getElementById('mcnRateSlider'); if(slider){slider.value=payoutMcnRate;slider.style.setProperty('--mcn-pct',payoutMcnRate+'%');} const mv=document.getElementById('mcnRateValue'); if(mv) mv.textContent=payoutMcnRate+'%'; const cv=document.getElementById('creatorRateValue'); if(cv) cv.textContent=(100-SPLIT.platform-payoutMcnRate)+'%'; document.querySelectorAll('[data-mcn-rate]').forEach(b=>b.classList.toggle('active',Number(b.dataset.mcnRate)===payoutMcnRate)); renderPayoutSplitPreview(); }
+function openPayout(method=''){ openModal('payoutModal'); if(method) document.getElementById('payoutMethod').value=method; initPickers(); updateMcnRate(payoutMcnRate); renderPayoutSplitPreview(); applyTranslations(document.getElementById('payoutModal')); }
+async function createPayout(){ const btn=document.getElementById('createPayoutBtn'); const amount=Number(document.getElementById('payoutAmount').value||0); const currency=document.getElementById('payoutCurrency').value; const method=document.getElementById('payoutMethod').value; if(!amount || amount<=0){toast('Invalid amount','Enter an amount greater than zero.','err'); return;} setLoading(btn,true); try{await api('/api/payouts',{method:'POST',body:JSON.stringify({amount,currency,method})}); await bootstrap(); closeModal('payoutModal'); toast('Payout created','Request saved to PostgreSQL and added to the queue.');}catch(e){toast('Payout failed',e.message,'err')}finally{setLoading(btn,false)}}
+function openPayoutAnalytics(id){ const p=state.payouts.find(x=>String(x.id)===String(id)); if(!p) return; document.getElementById('analyticsTitle').textContent=`${p.id} breakdown`; document.getElementById('analyticsBody').innerHTML=`<div class="p" style="margin:0 0 12px;font-size:13px">Method: <b style="color:#fff">${p.method}</b> · Status: <b style="color:#fff">${p.status}</b></div>${renderBreakdownCards(p.amount,p.currency)}`; openModal('analyticsModal'); }
+function openOverviewAnalytics(){ document.getElementById('analyticsTitle').textContent='Default revenue split'; document.getElementById('analyticsBody').innerHTML=`<div class="p" style="margin:0 0 12px;font-size:13px">Example analytics on a sample gross amount of <b style="color:#fff">$100,000</b>.</div>${renderBreakdownCards(100000,'USD')}`; openModal('analyticsModal'); }
+async function updateStatus(id,status){ try{ await api('/api/payouts/'+encodeURIComponent(id)+'/status',{method:'PATCH',body:JSON.stringify({status})}); await bootstrap(); toast('Status updated',`Payout ${id} moved to ${status}.`);} catch(e){ toast('Action failed',e.message,'err'); } }
+function openChannel(id){ const c=state.channels.find(x=>String(x.id)===String(id)); if(!c) return; const b=calcBreakdown(c.revenue); document.getElementById('channelModalTitle').textContent=c.name; document.getElementById('channelModalBody').innerHTML=`<div class="split-grid"><div class="split-card"><div class="title">Revenue</div><div class="amount">${money(c.revenue)}</div><div class="desc">Current channel revenue</div></div><div class="split-card"><div class="title">Creator payable</div><div class="amount">${money(b.creator)}</div><div class="desc">${pct(b.creatorRate)} to creator</div></div><div class="split-card"><div class="title">MCN share</div><div class="amount">${money(b.mcn)}</div><div class="desc">${pct(b.mcnRate)} network share</div></div><div class="split-card"><div class="title">Platform fee</div><div class="amount">${money(b.platform)}</div><div class="desc">${pct(b.platformRate)} NetworkPay fee</div></div></div>${renderBreakdownCards(c.revenue,'USD')}<div class="profile-list" style="margin-top:16px"><div class="profile-row"><div><div class="profile-key">Handle</div><div class="profile-value">${c.handle}</div></div></div><div class="profile-row"><div><div class="profile-key">Subscribers</div><div class="profile-value">${Number(c.subs||0).toLocaleString()}</div></div></div><div class="profile-row"><div><div class="profile-key">Health</div><div class="profile-value">${c.health}</div></div></div></div>`; openModal('channelModal'); }
+async function syncData(){ try{ await bootstrap(); toast('Synced','Latest production data loaded.'); } catch(e){ toast('Sync failed',e.message,'err'); } }
+async function toggleYoutube(){ try{ if(!state.youtubeConnected) await api('/api/youtube/demo-connect',{method:'POST',body:'{}'}); else await api('/api/youtube/demo-sync',{method:'POST',body:'{}'}); await bootstrap(); toast('Connector updated','YouTube pilot state saved.'); } catch(e){ toast('Connector failed',e.message,'err'); } }
+
+
+let historyFilter='all';
+function activityType(a){const s=String(a?.text||'').toLowerCase(); if(/payout|settlement|выплат|付款/.test(s)) return 'payout'; if(/revenue|split|доход|收益|分成/.test(s)) return 'revenue'; return 'other';}
+function findPayoutFromActivity(a){const m=String(a?.text||'').match(/NP-\d+/i); if(!m) return null; return (state?.payouts||[]).find(p=>String(p.id).toUpperCase()===m[0].toUpperCase())||null;}
+function historyIcon(a){const type=activityType(a); return type==='payout'?'$':type==='revenue'?'↗':'•';}
+function renderHistory(){
+ const body=document.getElementById('historyBody'); if(!body||!state) return;
+ let arr=(state.activity||[]).map((a,i)=>({...a,_index:i,_type:activityType(a)}));
+ if(historyFilter!=='all') arr=arr.filter(a=>a._type===historyFilter);
+ body.innerHTML=arr.length?`<div class="history-list">${arr.map(a=>`<div class="history-item" data-action="open-activity" data-index="${a._index}"><div class="history-icon">${historyIcon(a)}</div><div class="history-main"><b>${a.text}</b><span>${a.time}</span></div><div class="history-amount">${a.amount||''}</div></div>`).join('')}</div>`:`<div class="history-detail">No activity found</div>`;
+ applyTranslations(body);
+}
+function openHistory(){historyFilter='all'; document.querySelectorAll('#historyModal [data-action="history-filter"]').forEach(b=>b.classList.toggle('active',b.dataset.filter==='all')); renderHistory(); openModal('historyModal');}
+function openActivity(index){
+ const a=(state?.activity||[])[Number(index)]; if(!a) return;
+ const p=findPayoutFromActivity(a);
+ document.getElementById('historyTitle').textContent='Activity details';
+ const body=document.getElementById('historyBody');
+ body.innerHTML=`<div class="history-detail"><div class="kicker">${activityType(a)==='payout'?'Payout':'Activity'}</div><div class="h2" style="font-size:25px;margin-top:8px">${a.text}</div><div class="p" style="font-size:13px;margin:8px 0 0">${a.time}</div>${a.amount?`<div class="split-card" style="margin-top:14px"><div class="title">Amount</div><div class="amount">${a.amount}</div></div>`:''}${p?`<div class="row-actions"><button class="btn primary" data-action="activity-payout-analytics" data-id="${p.id}">Open payout analytics</button></div>`:''}</div>`;
+ applyTranslations(body); openModal('historyModal');
+}
+document.addEventListener('click', async (e)=>{ const t=e.target.closest('[data-action]'); if(!t) return; const action=t.dataset.action; const target=t.dataset.target; if(action==='toggle-language'){const p=t.closest('.lang-picker'); document.querySelectorAll('.lang-picker').forEach(x=>{if(x!==p)x.classList.remove('open')}); p?.classList.toggle('open'); return;} if(action==='set-language'){setLanguage(t.dataset.lang); return;} if(action==='navigate'){navigate(target); return;} if(action==='sync'){await syncData(); return;} if(action==='logout'){logout(); return;} if(action==='open-payout'){openPayout(t.dataset.method||''); return;} if(action==='close-modal'){closeModal(target); return;} if(action==='update-status'){await updateStatus(t.dataset.id,t.dataset.status); return;} if(action==='youtube'){await toggleYoutube(); return;} if(action==='open-channel'){openChannel(t.dataset.id); return;} if(action==='channel-filter'){channelFilter=t.dataset.filter||'all'; renderRevenue(); return;} if(action==='open-all-channels'){const first=state.channels[0]; if(first) openChannel(first.id); return;} if(action==='open-payout-analytics'){openPayoutAnalytics(t.dataset.id); return;} if(action==='open-overview-analytics'){openOverviewAnalytics(); return;} if(action==='open-entity'){openEntity(Number(t.dataset.index)); return;} if(action==='navigate-from-modal'){closeModal('entityModal'); navigate(target); return;} if(action==='open-history'){openHistory(); return;} if(action==='open-activity'){openActivity(t.dataset.index); return;} if(action==='history-filter'){historyFilter=t.dataset.filter||'all'; document.querySelectorAll('#historyModal [data-action="history-filter"]').forEach(b=>b.classList.toggle('active',b.dataset.filter===historyFilter)); document.getElementById('historyTitle').textContent='Workspace history'; renderHistory(); return;} if(action==='activity-payout-analytics'){closeModal('historyModal'); openPayoutAnalytics(t.dataset.id); return;} });
+
+
+document.addEventListener('click',(e)=>{
+  const trigger=e.target.closest('[data-picker]');
+  if(trigger){ e.preventDefault(); e.stopPropagation(); togglePicker(trigger.dataset.picker); return; }
+  const opt=e.target.closest('.picker-option');
+  if(opt){ e.preventDefault(); e.stopPropagation(); const menu=opt.closest('.picker-menu'); choosePicker(menu.id==='currencyMenu'?'currency':'method',opt.dataset.pickValue); return; }
+  if(!e.target.closest('.custom-picker')){ document.querySelectorAll('.picker-menu').forEach(m=>m.classList.remove('show')); document.querySelectorAll('.picker-trigger').forEach(t=>t.classList.remove('open')); }
+});
+
+
+// v6.2 AI copilot and support center
+function setAssistTab(tab){
+  document.querySelectorAll('.assist-tab').forEach(b=>b.classList.toggle('active',b.dataset.assistTab===tab));
+  document.getElementById('assistViewAI')?.classList.toggle('active',tab==='ai');
+  document.getElementById('assistViewSupport')?.classList.toggle('active',tab==='support');
+  const compose=document.getElementById('assistCompose'); if(compose) compose.style.display=tab==='ai'?'flex':'none';
+}
+function openAssist(tab='ai'){ document.getElementById('assistPanel')?.classList.add('show'); setAssistTab(tab); if(tab==='ai') setTimeout(()=>document.getElementById('aiInput')?.focus(),80); }
+function closeAssist(){ document.getElementById('assistPanel')?.classList.remove('show'); }
+function addChat(role,text){ const log=document.getElementById('chatLog'); if(!log) return; const m=document.createElement('div'); m.className='msg '+role; m.textContent=text; log.appendChild(m); const body=document.querySelector('.assist-body'); if(body) body.scrollTop=body.scrollHeight; return m; }
+function aiAnswer(q){
+  const s=state||{}; const lower=String(q||'').toLowerCase();
+  const payouts=Array.isArray(s.payouts)?s.payouts:[]; const channels=Array.isArray(s.channels)?s.channels:[];
+  if(/10,?000|split|раздел|распред|creator|author|автор|mcn|platform|fee/.test(lower)){
+    const amount=/10,?000/.test(lower)?10000:(Number((q.match(/[\d,.]+/)||[])[0]?.replace(/,/g,''))||10000); const b=calcBreakdown(amount);
+    return `For ${money(amount)} gross: creator receives ${money(b.creator)} (${SPLIT.creator}%), MCN receives ${money(b.mcn)} (${SPLIT.mcn}%), and NetworkPay fee is ${money(b.platform)} (${SPLIT.platform}%).`;
+  }
+  if(/pending|ожида|payout|выплат/.test(lower)){ const p=payouts.filter(x=>x.status==='Pending'); const total=p.reduce((n,x)=>n+Number(x.amount||0),0); return p.length?`${p.length} payout request(s) are pending, with a combined gross value of ${money(total)}.`:'There are no pending payout requests right now.'; }
+  if(/review|risk|health|channel|канал/.test(lower)){ const r=channels.filter(c=>String(c.health||'').toLowerCase()!=='healthy'); return r.length?`Channels needing review: ${r.map(c=>c.name).join(', ')}.`:`All ${channels.length||0} visible channels are currently healthy.`; }
+  if(/api|railway|database|postgres|production|сервер/.test(lower)){ return `Production API is configured at ${API}. The demo is connected to Railway PostgreSQL and the UI can sync its current workspace data from the backend.`; }
+  if(/balance|wallet|баланс/.test(lower)){ return `Current settlement balance is ${money(s.balance||0)}. Open Wallet for payout creation and settlement history.`; }
+  if(/revenue|доход|выруч/.test(lower)){ return `Current monthly revenue is ${money(s.monthlyRevenue||0)} across ${channels.length||0} tracked channels.`; }
+  return 'I can help with payout calculations, revenue splits, channel health, wallet balance, pending approvals and production API status. Try asking “How is a $10,000 payout split?”';
+}
+function sendAi(){ const input=document.getElementById('aiInput'); const q=input?.value.trim(); if(!q) return; addChat('user',q); input.value=''; const typing=addChat('bot typing',''); if(typing) typing.innerHTML='<i></i><i></i><i></i>'; setTimeout(()=>{typing?.remove(); addChat('bot',aiAnswer(q));},500); }
+function createSupportTicket(){ const subject=document.getElementById('supportSubject')?.value.trim(); const message=document.getElementById('supportMessage')?.value.trim(); if(!subject||!message){toast('Support ticket','Add a subject and describe the issue.','err'); return;} const id='NP-SUP-'+String(Date.now()).slice(-6); const ticket={id,subject,message,created:new Date().toISOString(),status:'Open'}; const list=JSON.parse(localStorage.getItem('np_support_tickets')||'[]'); list.unshift(ticket); localStorage.setItem('np_support_tickets',JSON.stringify(list)); const r=document.getElementById('supportResult'); if(r) r.innerHTML=`<div class="ticket-success"><b>${id}</b><br>Ticket created successfully. Status: Open.</div>`; toast('Support ticket created',id); }
+function wireAssistant(){
+  document.getElementById('aiQuickBtn')?.addEventListener('click',()=>openAssist('ai'));
+  document.getElementById('supportQuickBtn')?.addEventListener('click',()=>openAssist('support'));
+  document.getElementById('closeAssistBtn')?.addEventListener('click',closeAssist);
+  document.querySelectorAll('[data-assist-tab]').forEach(b=>b.addEventListener('click',()=>setAssistTab(b.dataset.assistTab)));
+  document.getElementById('sendAiBtn')?.addEventListener('click',sendAi);
+  document.getElementById('aiInput')?.addEventListener('keydown',e=>{if(e.key==='Enter') sendAi();});
+  document.querySelectorAll('[data-ai-prompt]').forEach(b=>b.addEventListener('click',()=>{document.getElementById('aiInput').value=b.dataset.aiPrompt; sendAi();}));
+  document.getElementById('issueApiBtn')?.addEventListener('click',()=>{document.getElementById('supportSubject').value='Production API / Railway connection'; document.getElementById('supportMessage').value='Please check the production API and Railway PostgreSQL connection.';});
+  document.getElementById('issuePayoutBtn')?.addEventListener('click',()=>{document.getElementById('supportSubject').value='Payout workflow issue'; document.getElementById('supportMessage').value='Please review a payout workflow or settlement status issue.';});
+  document.getElementById('submitSupportBtn')?.addEventListener('click',createSupportTicket);
+}
+
+document.getElementById('loginBtn').addEventListener('click',doLogin); document.getElementById('password').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); }); document.getElementById('createPayoutBtn').addEventListener('click',createPayout); document.getElementById('payoutAmount').addEventListener('input',renderPayoutSplitPreview); document.getElementById('mcnRateSlider').addEventListener('input',e=>updateMcnRate(e.target.value)); document.querySelectorAll('[data-mcn-rate]').forEach(b=>b.addEventListener('click',()=>updateMcnRate(b.dataset.mcnRate))); 
+wireAssistant();
+document.addEventListener('click',e=>{if(!e.target.closest('.lang-picker')) document.querySelectorAll('.lang-picker').forEach(x=>x.classList.remove('open'));});
+(async function init(){
+  try{ localStorage.removeItem('np_web_token_v5'); localStorage.removeItem('np_web_token_v4'); localStorage.removeItem('np_web_token_v3'); localStorage.removeItem('np_language'); }catch(e){}
+  token=''; user=null; state=null; currentPage='home'; currentLang='en';
+  document.getElementById('app')?.classList.add('hidden'); document.getElementById('login')?.classList.remove('hidden');
+  ['Launching secure sign in…','Preparing NetworkPay…','Ready'].forEach((msg,i)=>setTimeout(()=>{const el=document.getElementById('loaderText'); if(el) el.textContent=msg;},250+i*320));
+  setTimeout(()=>document.getElementById('loader').classList.add('done'),1050);
+  initPickers(); updateMcnRate(payoutMcnRate); renderPayoutSplitPreview(); renderLanguagePickers(); applyTranslations(document);
+})();
+</script>
+<script>
+// v7 Executive Pro enhancements
+Object.assign(TR.ru,{
+ 'Executive operating view':'Операционный обзор для руководителя','Live pilot workspace':'Пилотная среда в реальном времени','Tracked revenue':'Отслеживаемый доход','Active MCNs':'Активные MCN','Connected channels':'Подключённые каналы','Countries':'Страны','Completed payouts':'Завершённые выплаты','Revenue flow':'Денежный поток','How NetworkPay turns gross revenue into transparent settlement.':'Как NetworkPay превращает валовый доход в прозрачные расчёты.','YouTube Revenue':'Доход YouTube','Imported reports':'Импортированные отчёты','NetworkPay':'NetworkPay','Reconciliation layer':'Слой сверки','Split Engine':'Механизм распределения','Contract rules':'Правила договоров','Creator':'Автор','MCN':'MCN','Platform':'Платформа','Notification center':'Центр уведомлений','Workspace updates':'Обновления рабочего пространства','Notifications':'Уведомления','Payout approved':'Выплата одобрена','A payout moved to processing.':'Выплата переведена в обработку.','Channel review required':'Требуется проверка канала','One channel has a review flag.':'У одного канала установлен флаг проверки.','Production sync complete':'Синхронизация завершена','Latest Railway data is available.':'Последние данные Railway загружены.','Channel performance':'Показатели канала','Last 12 months':'Последние 12 месяцев','RPM':'RPM','CPM':'CPM','Monthly views':'Просмотры за месяц','Subscribers':'Подписчики','Settlement timeline':'Статус расчёта','Revenue imported':'Доход импортирован','Contract split applied':'Распределение по договору применено','Ready for payout':'Готово к выплате','Demo perspective':'Демо-режим','Switch the interface perspective for a presentation.':'Переключите роль интерфейса для презентации.','Creator View':'Вид автора','MCN Owner':'Владелец MCN','Admin View':'Вид администратора'
+});
+Object.assign(TR.zh,{
+ 'Executive operating view':'管理层运营视图','Live pilot workspace':'实时试点工作区','Tracked revenue':'追踪收入','Active MCNs':'活跃 MCN','Connected channels':'已连接频道','Countries':'国家/地区','Completed payouts':'已完成付款','Revenue flow':'资金流','How NetworkPay turns gross revenue into transparent settlement.':'NetworkPay 如何将总收入转化为透明结算。','YouTube Revenue':'YouTube 收入','Imported reports':'已导入报告','NetworkPay':'NetworkPay','Reconciliation layer':'对账层','Split Engine':'分成引擎','Contract rules':'合同规则','Creator':'创作者','MCN':'MCN','Platform':'平台','Notification center':'通知中心','Workspace updates':'工作区更新','Notifications':'通知','Payout approved':'付款已批准','A payout moved to processing.':'一笔付款已进入处理中。','Channel review required':'频道需要审核','One channel has a review flag.':'一个频道被标记为需要审核。','Production sync complete':'生产同步完成','Latest Railway data is available.':'最新 Railway 数据已可用。','Channel performance':'频道表现','Last 12 months':'过去 12 个月','RPM':'RPM','CPM':'CPM','Monthly views':'月观看量','Subscribers':'订阅者','Settlement timeline':'结算时间线','Revenue imported':'收入已导入','Contract split applied':'合同分成已应用','Ready for payout':'可付款','Demo perspective':'演示视角','Switch the interface perspective for a presentation.':'演示时可切换界面视角。','Creator View':'创作者视角','MCN Owner':'MCN 所有者','Admin View':'管理员视角'
+});
+let demoPerspective='mcn_owner';
+function execMetrics(){
+ const channels=Array.isArray(state?.channels)?state.channels:[]; const mcns=Array.isArray(state?.mcns)?state.mcns:[]; const payouts=Array.isArray(state?.payouts)?state.payouts:[];
+ const tracked=channels.reduce((n,c)=>n+Number(c.revenue||0),0) || Number(state?.monthlyRevenue||0);
+ const countries=new Set(mcns.map(x=>x.country).filter(Boolean)).size;
+ return {tracked,mcns:mcns.length,channels:channels.length,countries,completed:payouts.filter(p=>p.status==='Completed').length};
+}
+function renderExecutiveHome(){
+ const m=execMetrics(); const monthly=state.monthlyRevenue||m.tracked; const balance=state.balance||0; const pending=state.payouts.filter(p=>p.status==='Pending').reduce((n,p)=>n+Number(p.amount||0),0);
+ document.getElementById('page-home').innerHTML=`
+ <div class="executive-banner"><div><b>Executive operating view</b><span>Live pilot workspace · Revenue, contracts, channels and settlements in one control layer.</span></div><div class="live-badge"><i></i>Production connected</div></div>
+ <div class="exec-kpi-grid">
+  <div class="exec-kpi clickable" data-action="navigate" data-target="revenue"><div class="ek-label">Tracked revenue</div><div class="ek-value">${money(m.tracked)}</div><div class="ek-meta">Current connected channel portfolio</div></div>
+  <div class="exec-kpi clickable" data-action="navigate" data-target="network"><div class="ek-label">Active MCNs</div><div class="ek-value">${m.mcns}</div><div class="ek-meta">Network entities in workspace</div></div>
+  <div class="exec-kpi clickable" data-action="navigate" data-target="revenue"><div class="ek-label">Connected channels</div><div class="ek-value">${m.channels}</div><div class="ek-meta">Channels under monitoring</div></div>
+  <div class="exec-kpi"><div class="ek-label">Countries</div><div class="ek-value">${m.countries}</div><div class="ek-meta">MCN operating markets</div></div>
+  <div class="exec-kpi clickable" data-action="navigate" data-target="wallet"><div class="ek-label">Completed payouts</div><div class="ek-value">${m.completed}</div><div class="ek-meta">Completed settlement records</div></div>
+ </div>
+ <div class="grid kpis">
+  <div class="card kpi clickable" data-action="navigate" data-target="revenue"><div class="label">Monthly revenue</div><div class="value">${money(monthly)}</div><div class="meta">Current reporting period</div></div>
+  <div class="card kpi clickable" data-action="navigate" data-target="wallet"><div class="label">Available balance</div><div class="value">${money(balance)}</div><div class="meta">Settlement wallet</div></div>
+  <div class="card kpi clickable" data-action="navigate" data-target="${(demoPerspective==='admin'||user?.role==='admin'||user?.role==='finance')?'admin':'wallet'}"><div class="label">Pending payouts</div><div class="value">${money(pending)}</div><div class="meta">${state.payouts.filter(p=>p.status==='Pending').length} requests awaiting approval</div></div>
+  <div class="card kpi clickable" data-action="open-overview-analytics"><div class="label">Split model</div><div class="value">Flexible</div><div class="meta">Creator · MCN contract · 3% platform</div></div>
+ </div>
+ <div class="card money-flow-card" style="margin-top:16px"><div class="section-title">Revenue flow</div><div class="subtle">How NetworkPay turns gross revenue into transparent settlement.</div><div class="flow-stage"><div class="flow-node"><div class="fn-icon">▶</div><strong>YouTube Revenue</strong><small>Imported reports<br>${money(monthly)}</small></div><div class="flow-arrow"></div><div class="flow-node"><div class="fn-icon">◈</div><strong>NetworkPay</strong><small>Reconciliation layer<br>Contracts + audit</small></div><div class="flow-arrow"></div><div class="flow-node"><div class="fn-icon">⇄</div><strong>Split Engine</strong><small>Contract rules</small><div class="split-destination"><div class="split-mini"><b>67%</b><span>Creator</span></div><div class="split-mini"><b>30%</b><span>MCN</span></div><div class="split-mini"><b>3%</b><span>Platform</span></div></div></div></div></div>
+ <div class="grid two" style="margin-top:16px"><div class="card"><div class="section-title">Revenue trend</div><div class="chart">${[48,61,55,72,68,86,79,91,83,99,89,95].map(h=>`<div class="bar" style="height:${h}%"></div>`).join('')}</div><div class="legend"><span>Jan</span><span>Mar</span><span>May</span><span>Jul</span><span>Sep</span><span>Nov</span></div></div><div class="card"><div class="activity-headline"><div class="section-title" style="margin-bottom:0">Recent activity</div><button class="btn secondary small activity-history-btn" data-action="open-history">View full history</button></div><div class="activity">${state.activity.slice(0,6).map((a,i)=>`<div class="activity-row interactive" data-action="open-activity" data-index="${i}"><div class="activity-main"><div class="activity-title">${a.text}</div><div class="activity-time">${a.time}</div></div><div class="activity-right"><div class="activity-amount">${a.amount||''}</div><span class="activity-chevron">→</span></div></div>`).join('')}</div></div></div>`;
+ queueMicrotask(()=>applyTranslations(document.getElementById('page-home')));
+}
+renderHome=renderExecutiveHome;
+
+function openNotifications(){
+ const notices=[
+  ['✓','Payout approved','A payout moved to processing.','2 min'],
+  ['!','Channel review required','One channel has a review flag.','18 min'],
+  ['↻','Production sync complete','Latest Railway data is available.','1 hr']
+ ];
+ const box=document.getElementById('notificationList'); if(box) box.innerHTML=notices.map(n=>`<div class="notice"><div class="notice-icon">${n[0]}</div><div><b>${n[1]}</b><p>${n[2]}</p></div><time>${n[3]}</time></div>`).join(''); openModal('notificationModal'); applyTranslations(document.getElementById('notificationModal'));
+}
+
+const oldOpenChannel=openChannel;
+openChannel=function(id){
+ const c=state.channels.find(x=>String(x.id)===String(id)); if(!c) return; const b=calcBreakdown(c.revenue);
+ const vals=[42,51,49,58,64,61,72,68,77,82,79,88].map((v,i)=>Math.min(100,v+(Number(String(c.id).replace(/\D/g,''))||i)%7));
+ const rpm=(2.8+(Number(c.revenue||0)%17)/10).toFixed(2); const cpm=(5.4+(Number(c.subs||0)%13)/10).toFixed(2); const views=Math.max(1,Math.round(Number(c.revenue||0)*230));
+ document.getElementById('channelModalTitle').textContent=c.name;
+ document.getElementById('channelModalBody').innerHTML=`
+  <div class="split-grid"><div class="split-card"><div class="title">Revenue</div><div class="amount">${money(c.revenue)}</div><div class="desc">Current channel revenue</div></div><div class="split-card"><div class="title">Creator payable</div><div class="amount">${money(b.creator)}</div><div class="desc">${pct(b.creatorRate)} to creator</div></div><div class="split-card"><div class="title">MCN share</div><div class="amount">${money(b.mcn)}</div><div class="desc">${pct(b.mcnRate)} network share</div></div><div class="split-card"><div class="title">Platform fee</div><div class="amount">${money(b.platform)}</div><div class="desc">${pct(b.platformRate)} NetworkPay fee</div></div></div>
+  <div class="channel-analytics-layout"><div class="card"><div class="section-title">Channel performance</div><div class="subtle">Last 12 months</div><div class="mini-line-chart">${vals.map(v=>`<div class="mini-line-bar" style="height:${v}%"></div>`).join('')}</div><div class="legend"><span>Jan</span><span>Apr</span><span>Jul</span><span>Oct</span><span>Dec</span></div></div><div class="card"><div class="section-title">Performance metrics</div><div class="metric-stack"><div class="metric-tile"><span>RPM</span><b>$${rpm}</b><small>Revenue per 1K views</small></div><div class="metric-tile"><span>CPM</span><b>$${cpm}</b><small>Gross ad rate</small></div><div class="metric-tile"><span>Monthly views</span><b>${views.toLocaleString()}</b><small>Estimated pilot metric</small></div><div class="metric-tile"><span>Subscribers</span><b>${Number(c.subs||0).toLocaleString()}</b><small>${c.health}</small></div></div></div></div>
+  ${renderBreakdownCards(c.revenue,'USD')}
+  <div class="card" style="margin-top:14px"><div class="section-title">Settlement timeline</div><div class="status-timeline"><div class="time-step"><div class="rail"></div><div><b>Revenue imported</b><p>YouTube report reconciled with channel record.</p></div></div><div class="time-step"><div class="rail"></div><div><b>Contract split applied</b><p>Creator / MCN agreement and platform fee calculated.</p></div></div><div class="time-step"><div class="rail"></div><div><b>Ready for payout</b><p>Balance is available in the settlement workflow.</p></div></div></div></div>`;
+ openModal('channelModal'); applyTranslations(document.getElementById('channelModal'));
+}
+
+function setDemoPerspective(role){
+ demoPerspective=role; const labels={mcn_owner:'MCN Owner',creator:'Creator View',admin:'Admin View'}; document.getElementById('roleText').textContent=labels[role]||'MCN Owner'; document.querySelectorAll('[data-demo-role]').forEach(b=>b.classList.toggle('active',b.dataset.demoRole===role));
+ if(role==='creator' && currentPage==='admin') navigate('home'); renderNav(); applyTranslations(document); toast('Demo perspective',labels[role]||role);
+}
+const oldRenderNav=renderNav;
+renderNav=function(){
+ const roleForNav=demoPerspective==='creator'?'creator':(demoPerspective==='admin'?'admin':user?.role);
+ const allowed=NAV_ITEMS.filter(([id])=>id!=='admin' || ['admin','finance'].includes(roleForNav));
+ const desktop=document.getElementById('desktopNav'), mobile=document.getElementById('mobileNav');
+ desktop.innerHTML=allowed.map(([id,label,icon])=>`<button class="nav-btn ${currentPage===id?'active':''}" data-action="navigate" data-target="${id}">${icon}<span>${label}</span></button>`).join('');
+ mobile.innerHTML=allowed.slice(0,5).map(([id,label,icon])=>`<button class="${currentPage===id?'active':''}" data-action="navigate" data-target="${id}">${icon}<span>${label}</span></button>`).join('');
+ queueMicrotask(()=>applyTranslations(document));
+}
+const oldRenderProfile=renderProfile;
+renderProfile=function(){ oldRenderProfile(); const page=document.getElementById('page-profile'); const card=document.createElement('div'); card.className='card'; card.style.marginTop='16px'; card.innerHTML=`<div class="section-title">Demo perspective</div><div class="subtle">Switch the interface perspective for a presentation.</div><div class="demo-role-switch"><button class="role-btn ${demoPerspective==='mcn_owner'?'active':''}" data-action="demo-role" data-demo-role="mcn_owner">MCN Owner</button><button class="role-btn ${demoPerspective==='creator'?'active':''}" data-action="demo-role" data-demo-role="creator">Creator View</button><button class="role-btn ${demoPerspective==='admin'?'active':''}" data-action="demo-role" data-demo-role="admin">Admin View</button></div>`; page.appendChild(card); applyTranslations(card); }
+
+document.addEventListener('click',e=>{ const t=e.target.closest('[data-action]'); if(!t) return; if(t.dataset.action==='open-notifications'){openNotifications();} if(t.dataset.action==='demo-role'){setDemoPerspective(t.dataset.demoRole);} });
+
+setTimeout(()=>{if(state){renderAll();}},900);
+</script>
+
+<style id="np-v7-3-motion">
+/* v7.3 Motion System — presentation-grade micro-interactions */
+:root{--motion-ease:cubic-bezier(.2,.8,.2,1)}
+.page.motion-enter>.page-head,.page.motion-enter>.executive-banner,.page.motion-enter>.exec-kpi-grid,.page.motion-enter>.grid,.page.motion-enter>.card{animation:npPageIn .72s var(--motion-ease) both}
+.page.motion-enter>.exec-kpi-grid{animation-delay:.06s}.page.motion-enter>.grid{animation-delay:.10s}.page.motion-enter>.card{animation-delay:.14s}
+@keyframes npPageIn{from{opacity:0;transform:translateY(18px) scale(.992);filter:blur(7px)}to{opacity:1;transform:none;filter:none}}
+.exec-kpi,.kpi,.card,.channel-card,.activity-row,.rail,.notice,.metric-tile{will-change:transform,opacity}
+.np-reveal{opacity:0;transform:translateY(18px) scale(.985)}
+.np-reveal.np-in{animation:npReveal .72s var(--motion-ease) forwards;animation-delay:var(--np-delay,0ms)}
+@keyframes npReveal{0%{opacity:0;transform:translateY(18px) scale(.985)}70%{opacity:1;transform:translateY(-2px) scale(1.004)}100%{opacity:1;transform:none}}
+.exec-kpi.clickable,.card.clickable,.channel-card,.activity-row.interactive{transition:transform .28s var(--motion-ease),border-color .28s ease,box-shadow .28s ease,background .28s ease}
+.exec-kpi.clickable:hover,.card.clickable:hover,.channel-card:hover,.activity-row.interactive:hover{transform:translateY(-5px);border-color:rgba(113,241,187,.24);box-shadow:0 22px 52px rgba(0,0,0,.34),0 0 0 1px rgba(113,241,187,.05) inset}
+.exec-kpi.clickable:active,.card.clickable:active,.channel-card:active,.activity-row.interactive:active{transform:translateY(-1px) scale(.992)}
+.ek-value,.kpi .value,.split-card .amount{font-variant-numeric:tabular-nums;letter-spacing:-.035em}
+.chart .bar,.mini-line-bar{transform-origin:bottom;transform:scaleY(0);opacity:.25}
+.chart .bar.np-bar-in,.mini-line-bar.np-bar-in{animation:npBarGrow 1.05s var(--motion-ease) forwards;animation-delay:var(--np-delay,0ms)}
+@keyframes npBarGrow{0%{transform:scaleY(0);opacity:.22;filter:saturate(.6)}75%{transform:scaleY(1.04);opacity:1}100%{transform:scaleY(1);opacity:1;filter:none}}
+.flow-node{position:relative;overflow:hidden}.flow-node::after{content:"";position:absolute;inset:-30%;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.10) 49%,transparent 63%);transform:translateX(-125%);pointer-events:none}.flow-node.np-flow-in::after{animation:npSheen 2.8s .35s ease-in-out infinite}
+@keyframes npSheen{0%,52%{transform:translateX(-125%)}78%,100%{transform:translateX(125%)}}
+.flow-arrow{position:relative;overflow:visible}.flow-arrow::after{content:"";position:absolute;width:11px;height:11px;border-radius:50%;background:#71f1bb;box-shadow:0 0 18px rgba(113,241,187,.9);left:50%;top:0;transform:translate(-50%,-50%);opacity:0}.flow-arrow.np-flow-in::after{animation:npFlowDot 2.15s ease-in-out infinite}
+@keyframes npFlowDot{0%{top:0;opacity:0}12%{opacity:1}82%{opacity:1}100%{top:100%;opacity:0}}
+.live-badge i{animation:npPulse 1.55s ease-in-out infinite}@keyframes npPulse{0%,100%{transform:scale(.8);box-shadow:0 0 0 0 rgba(113,241,187,.36)}50%{transform:scale(1.08);box-shadow:0 0 0 9px rgba(113,241,187,0)}}
+.nav-btn,.mobile-nav button{transition:transform .22s var(--motion-ease),color .22s ease,background .22s ease}.nav-btn:active,.mobile-nav button:active{transform:scale(.94)}
+.btn{isolation:isolate}.np-ripple{position:absolute;border-radius:50%;transform:scale(0);background:rgba(255,255,255,.22);pointer-events:none;animation:npRipple .65s ease-out forwards;z-index:0}@keyframes npRipple{to{transform:scale(3.2);opacity:0}}
+.toast{animation:npToastIn .42s var(--motion-ease) both}@keyframes npToastIn{from{opacity:0;transform:translateY(-10px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+@media (max-width:700px){.np-reveal{transform:translateY(13px) scale(.99)}.exec-kpi.clickable:hover,.card.clickable:hover,.channel-card:hover,.activity-row.interactive:hover{transform:none}.flow-node::after{opacity:.7}}
+</style>
+<script id="np-v7-3-motion-js">
+(function(){
+ const moneyLike=/^([€$£¥₩]?)(-?[\d,]+(?:\.\d+)?)(?:\s*([A-Z]{3,4}))?$/;
+ function animateNumber(el){
+   if(!el || el.dataset.npCounted==='1') return;
+   const raw=(el.textContent||'').trim(); const m=raw.match(moneyLike); if(!m) return;
+   const prefix=m[1]||'', suffix=m[3]?' '+m[3]:'', target=Number(m[2].replace(/,/g,'')); if(!Number.isFinite(target)) return;
+   el.dataset.npCounted='1'; const start=performance.now(), dur=Math.min(1900,1250+Math.abs(target)>100000?450:250);
+   const decimals=(m[2].split('.')[1]||'').length; const fmt=new Intl.NumberFormat('en-US',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+   const sign=target<0?'-':''; const abs=Math.abs(target);
+   el.textContent=prefix+(decimals?fmt.format(0):'0')+suffix;
+   function tick(now){const p=Math.min(1,(now-start)/1650), e=1-Math.pow(1-p,4), v=abs*e; el.textContent=(sign?'-':'')+prefix+fmt.format(v)+suffix; if(p<1)requestAnimationFrame(tick);}
+   requestAnimationFrame(tick);
+ }
+ function stageReveal(root){
+   if(!root) return;
+   root.classList.remove('motion-enter'); void root.offsetWidth; root.classList.add('motion-enter');
+   const items=root.querySelectorAll('.exec-kpi,.kpi,.channel-card,.activity-row,.split-card,.metric-tile,.rail,.notice');
+   items.forEach((el,i)=>{el.classList.remove('np-in'); el.classList.add('np-reveal'); el.style.setProperty('--np-delay',Math.min(i,12)*55+'ms'); requestAnimationFrame(()=>el.classList.add('np-in'));});
+   root.querySelectorAll('.ek-value,.kpi .value,.split-card .amount').forEach(animateNumber);
+   root.querySelectorAll('.chart .bar,.mini-line-bar').forEach((bar,i)=>{bar.classList.remove('np-bar-in'); bar.style.setProperty('--np-delay',(i*65+120)+'ms'); requestAnimationFrame(()=>bar.classList.add('np-bar-in'));});
+   root.querySelectorAll('.flow-node,.flow-arrow').forEach((el,i)=>{setTimeout(()=>el.classList.add('np-flow-in'),180+i*180)});
+ }
+ window.NetworkPayMotion={run:stageReveal};
+ const _navigate=window.navigate; if(typeof _navigate==='function'){window.navigate=function(id){const r=_navigate.apply(this,arguments); requestAnimationFrame(()=>stageReveal(document.getElementById('page-'+id))); return r;};}
+ const _renderHome=window.renderHome; if(typeof _renderHome==='function'){window.renderHome=function(){const r=_renderHome.apply(this,arguments); requestAnimationFrame(()=>stageReveal(document.getElementById('page-home'))); return r;};}
+ const _openChannel=window.openChannel; if(typeof _openChannel==='function'){window.openChannel=function(){const r=_openChannel.apply(this,arguments); setTimeout(()=>stageReveal(document.getElementById('channelModalBody')),40); return r;};}
+ document.addEventListener('click',e=>{const btn=e.target.closest('.btn'); if(btn){const r=btn.getBoundingClientRect(), s=Math.max(r.width,r.height), dot=document.createElement('span'); dot.className='np-ripple'; dot.style.width=dot.style.height=s+'px'; dot.style.left=(e.clientX-r.left-s/2)+'px'; dot.style.top=(e.clientY-r.top-s/2)+'px'; btn.appendChild(dot); setTimeout(()=>dot.remove(),700);}});
+})();
+</script>
+
+</body>
+</html>
+<style>
+/* v7.2.2 — mobile safe area + native AI/support sheets */
+@media (max-width:700px){
+  :root{--np-mobile-safe:64px;--np-nav-h:72px}
+  body{padding-bottom:calc(var(--np-mobile-safe) + env(safe-area-inset-bottom))}
+  .content{padding-bottom:calc(150px + var(--np-mobile-safe) + env(safe-area-inset-bottom))!important}
+
+  /* Reserve a clean strip above provider/deploy badges. */
+  .mobile-nav{
+    bottom:calc(var(--np-mobile-safe) + env(safe-area-inset-bottom))!important;
+    height:var(--np-nav-h)!important;
+    padding-bottom:6px!important;
+    border-radius:18px 18px 0 0;
+    box-shadow:0 -12px 34px rgba(0,0,0,.40);
+  }
+
+  /* Keep assistant buttons clearly above the mobile nav. */
+  .assist-launcher{
+    right:12px!important;
+    bottom:calc(var(--np-mobile-safe) + var(--np-nav-h) + 20px + env(safe-area-inset-bottom))!important;
+    transform:none!important;
+    gap:8px!important;
+  }
+  .assist-mini{width:48px!important;height:48px!important;border-radius:16px!important}
+  .assist-orb{width:54px!important;height:54px!important;padding:0!important;justify-content:center!important;border-radius:18px!important}
+  .assist-orb .assist-label{display:none!important}
+
+  /* AI + Support open as a native bottom sheet instead of a desktop window. */
+  .assist-panel{
+    left:8px!important;
+    right:8px!important;
+    width:auto!important;
+    bottom:calc(var(--np-mobile-safe) + var(--np-nav-h) + 12px + env(safe-area-inset-bottom))!important;
+    height:auto!important;
+    max-height:min(68dvh,610px)!important;
+    border-radius:26px!important;
+    overflow:hidden!important;
+    box-shadow:0 28px 90px rgba(0,0,0,.72),0 0 0 1px rgba(255,255,255,.035)!important;
+    transform-origin:50% 100%!important;
+  }
+  .assist-panel.show{grid-template-rows:auto auto minmax(0,1fr) auto!important;animation:npSheetUp .24s cubic-bezier(.2,.8,.2,1)!important}
+  @keyframes npSheetUp{from{opacity:0;transform:translateY(24px) scale(.985)}to{opacity:1;transform:none}}
+
+  .assist-head{padding:13px 14px 11px!important;gap:8px!important}
+  .assist-title .ai-dotmark{width:34px!important;height:34px!important;border-radius:12px!important}
+  .assist-title b{font-size:14px!important}.assist-title span{font-size:9px!important}
+  .assist-head .btn{min-height:38px!important;padding:8px 11px!important;border-radius:12px!important}
+  .assist-tabs{padding:8px 10px!important;gap:7px!important}
+  .assist-tab{min-height:39px!important;font-size:11px!important}
+  .assist-body{padding:10px!important;overscroll-behavior:contain!important}
+  .msg{font-size:11px!important;line-height:1.45!important;padding:10px 11px!important;max-width:92%!important}
+  .quick-prompts{gap:6px!important}.quick-prompt{font-size:9px!important;padding:7px 9px!important}
+  .assist-compose{padding:9px!important;gap:7px!important}
+  .assist-input{min-height:42px!important;font-size:16px!important;padding:10px 11px!important}
+  .send-ai{width:42px!important;height:42px!important}
+
+  /* Support becomes touch-first cards, never a desktop two-column form. */
+  .support-card{padding:12px!important;border-radius:17px!important;margin-bottom:8px!important}
+  .support-card b{font-size:12px!important}.support-card p{font-size:10px!important;line-height:1.45!important}
+  .support-actions{grid-template-columns:1fr!important;gap:7px!important;margin-top:8px!important}
+  .support-actions .btn{width:100%!important;min-height:42px!important}
+  .support-form{gap:8px!important;margin-top:9px!important}
+  .support-form .input{min-height:44px!important;font-size:16px!important;border-radius:14px!important}
+  .support-form textarea.input{min-height:82px!important;max-height:120px!important;resize:none!important}
+  #submitSupportBtn{min-height:46px!important;width:100%!important}
+
+  /* Avoid a browser zoom / desktop-like input feel. */
+  .assist-panel input,.assist-panel textarea,.assist-panel button{font-size:max(16px,1em)}
+}
+
+@media (max-width:420px){
+  :root{--np-mobile-safe:68px;--np-nav-h:70px}
+  .assist-panel{left:7px!important;right:7px!important;max-height:64dvh!important;border-radius:24px!important}
+  .assist-launcher{right:10px!important}
+}
+</style>
