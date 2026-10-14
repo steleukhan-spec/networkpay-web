@@ -842,6 +842,241 @@ setTimeout(()=>{if(state){renderAll();}},900);
 })();
 </script>
 
+
+
+<style id="np-v7-5-menu-replay-motion-css">
+/* v7.5 — every menu visit starts at top; scroll-triggered motion replays every visit */
+/* Disable legacy hidden/reveal state so the new controller is the single source of truth. */
+.np5-reveal-pending,.np5-reveal-done{opacity:1!important;transform:none!important}
+.np5-flow-dot{display:none!important}
+
+/* Fresh reveal state. Only the currently active page is armed. */
+.page.active .np8-reveal{opacity:0!important;transform:translate3d(0,20px,0) scale(.988)!important;filter:blur(4px)!important}
+.page.active .np8-reveal.np8-in{opacity:1!important;transform:none!important;filter:none!important;transition:opacity .58s cubic-bezier(.2,.82,.22,1),transform .68s cubic-bezier(.2,.82,.22,1),filter .5s ease!important}
+
+/* Trend bars replay whenever the user revisits the page and scrolls to the chart. */
+.page.active .np8-trend .chart .bar,
+.page.active .np8-trend .mini-line-bar{clip-path:inset(100% 0 0 0)!important;opacity:.22!important;transition:none!important}
+.page.active .np8-trend.np8-chart-in .chart .bar,
+.page.active .np8-trend.np8-chart-in .mini-line-bar{clip-path:inset(0 0 0 0)!important;opacity:1!important;transition:clip-path .78s cubic-bezier(.2,.82,.22,1) var(--np8-delay,0ms),opacity .45s ease var(--np8-delay,0ms)!important}
+
+/* Stable flow animation; it runs only while Revenue Flow is actually visible. */
+.flow-arrow{position:relative!important;overflow:visible!important}
+.np8-flow-dot{position:absolute;z-index:8;width:12px;height:12px;border-radius:999px;background:#79f4c2;box-shadow:0 0 0 6px rgba(121,244,194,.08),0 0 24px rgba(121,244,194,.95);opacity:0;pointer-events:none;will-change:transform,opacity}
+@media (min-width:701px){
+ .np8-flow-dot{left:0;top:50%;transform:translate3d(-6px,-50%,0)}
+ .np8-flow-live .flow-arrow .np8-flow-dot{animation:np8FlowX 1.65s cubic-bezier(.4,0,.2,1) infinite;animation-delay:var(--np8-flow-delay,0ms)}
+ @keyframes np8FlowX{0%{transform:translate3d(-6px,-50%,0);opacity:0}12%{opacity:1}86%{opacity:1}100%{transform:translate3d(calc(100% + 28px),-50%,0);opacity:0}}
+}
+@media (max-width:700px){
+ .np8-flow-dot{left:50%;top:0;transform:translate3d(-50%,-6px,0)}
+ .np8-flow-live .flow-arrow .np8-flow-dot{animation:np8FlowY 1.75s cubic-bezier(.4,0,.2,1) infinite;animation-delay:var(--np8-flow-delay,0ms)}
+ @keyframes np8FlowY{0%{transform:translate3d(-50%,-6px,0);opacity:0}12%{opacity:1}86%{opacity:1}100%{transform:translate3d(-50%,calc(100% + 28px),0);opacity:0}}
+}
+.np8-flow-live .flow-node{box-shadow:0 0 0 1px rgba(121,244,194,.05) inset,0 18px 42px rgba(0,0,0,.16)}
+
+/* Brighter mobile nav: icon has its own readable surface and no longer disappears into the platform. */
+@media (max-width:980px){
+ .mobile-nav{background:rgba(8,11,16,.975)!important;border-top-color:rgba(255,255,255,.11)!important;box-shadow:0 -12px 34px rgba(0,0,0,.42)!important}
+ .mobile-nav button{color:#aeb9ca!important;transition:color .2s ease,transform .16s ease!important}
+ .mobile-nav button>svg{width:38px!important;height:38px!important;padding:8px!important;border-radius:13px!important;color:#c7d3e5!important;stroke:currentColor!important;background:rgba(255,255,255,.055)!important;border:1px solid rgba(255,255,255,.07)!important;box-sizing:border-box!important;filter:drop-shadow(0 5px 12px rgba(0,0,0,.22))!important;transition:background .2s ease,color .2s ease,border-color .2s ease,transform .18s ease,box-shadow .2s ease!important}
+ .mobile-nav button.active{color:#fff!important}
+ .mobile-nav button.active>svg{color:#f8fbff!important;background:linear-gradient(145deg,rgba(107,181,255,.22),rgba(113,241,187,.18))!important;border-color:rgba(126,219,255,.28)!important;box-shadow:0 0 0 1px rgba(255,255,255,.035) inset,0 8px 22px rgba(77,159,255,.17)!important}
+ .mobile-nav button:active>svg{transform:scale(.92)!important}
+}
+</style>
+<script id="np-v7-5-menu-replay-motion-js">
+(function(){
+  let pageObserver=null;
+  let activation=0;
+  const reduced=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function hardTop(){
+    try{window.scrollTo({top:0,left:0,behavior:'instant'})}catch(e){window.scrollTo(0,0)}
+    const se=document.scrollingElement||document.documentElement;
+    if(se){se.scrollTop=0;se.scrollLeft=0}
+    document.documentElement.scrollTop=0;
+    document.body.scrollTop=0;
+    document.querySelectorAll('.main,.content').forEach(el=>{if(el.scrollTop) el.scrollTop=0});
+  }
+
+  function cancelPageAnimations(page){
+    if(!page) return;
+    page.querySelectorAll('*').forEach(el=>{try{el.getAnimations().forEach(a=>a.cancel())}catch(e){}});
+    page.querySelectorAll('.np8-reveal').forEach(el=>el.classList.remove('np8-reveal','np8-in'));
+    page.querySelectorAll('.np8-trend').forEach(el=>el.classList.remove('np8-trend','np8-chart-in'));
+    page.querySelectorAll('.money-flow-card').forEach(el=>el.classList.remove('np8-flow-live'));
+  }
+
+  function counter(el){
+    if(!el || reduced) return;
+    const raw=(el.dataset.np8Final || el.textContent || '').trim();
+    if(!el.dataset.np8Final) el.dataset.np8Final=raw;
+    if(!raw || raw.includes('/') || raw.includes(':') || raw.length>28) return;
+    const m=raw.match(/^([^0-9-]*)(-?[0-9][0-9,]*(?:\.[0-9]+)?)(.*)$/);
+    if(!m) return;
+    const value=Number(m[2].replace(/,/g,'')); if(!Number.isFinite(value)) return;
+    const prefix=m[1], suffix=m[3], decimals=(m[2].split('.')[1]||'').length;
+    const start=performance.now(), dur=Math.min(1350,760+Math.abs(value).toString().length*70);
+    const format=v=>Number(v).toLocaleString(undefined,{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+    function frame(now){
+      const p=Math.min(1,(now-start)/dur); const eased=1-Math.pow(1-p,4); const cur=value*eased;
+      el.textContent=prefix+format(decimals?cur:Math.round(cur))+suffix;
+      if(p<1) requestAnimationFrame(frame); else el.textContent=raw;
+    }
+    el.textContent=prefix+format(0)+suffix;
+    requestAnimationFrame(frame);
+  }
+
+  function onEnter(el){
+    if(el.classList.contains('np8-trend')){
+      el.classList.add('np8-chart-in');
+      el.querySelectorAll('.chart .bar,.mini-line-bar').forEach((bar,i)=>bar.style.setProperty('--np8-delay',(i*55)+'ms'));
+    }else if(el.classList.contains('money-flow-card')){
+      el.classList.add('np8-flow-live');
+    }else{
+      el.classList.add('np8-in');
+    }
+    el.querySelectorAll('.ek-value,.kpi .value,.split-card .amount,.metric-tile b,.user-stat b').forEach(counter);
+  }
+
+  function classifyTrend(el){
+    const title=(el.querySelector?.('.section-title')?.textContent||'').trim().toLowerCase();
+    return el.querySelector?.('.chart') && (title.includes('revenue trend')||title.includes('динамика доход')||title.includes('收入趋势'));
+  }
+
+  function armPage(page){
+    activation++;
+    const myActivation=activation;
+    if(pageObserver) pageObserver.disconnect();
+    cancelPageAnimations(page);
+
+    page.querySelectorAll('.money-flow-card .flow-arrow').forEach((arrow,i)=>{
+      let dot=arrow.querySelector('.np8-flow-dot');
+      if(!dot){dot=document.createElement('span');dot.className='np8-flow-dot';arrow.appendChild(dot)}
+      dot.style.setProperty('--np8-flow-delay',(i*260)+'ms');
+    });
+
+    const candidates=[...page.querySelectorAll('.page-head,.executive-banner,.exec-kpi,.card,.channel-card,.activity-row,.split-card,.metric-tile,.rail,.notice')];
+    candidates.forEach(el=>{
+      if(el.closest('.modal')) return;
+      if(el.classList.contains('money-flow-card')) return;
+      if(classifyTrend(el)) el.classList.add('np8-trend');
+      else el.classList.add('np8-reveal');
+    });
+
+    const flow=page.querySelector('.money-flow-card');
+    if(flow) candidates.push(flow);
+
+    if(reduced){candidates.forEach(el=>{el.classList.add('np8-in','np8-chart-in');});return}
+
+    pageObserver=new IntersectionObserver(entries=>{
+      if(myActivation!==activation) return;
+      entries.forEach(entry=>{
+        const el=entry.target;
+        if(entry.isIntersecting){onEnter(el); if(!el.classList.contains('money-flow-card')) pageObserver.unobserve(el)}
+        else if(el.classList.contains('money-flow-card')) el.classList.remove('np8-flow-live');
+      });
+    },{threshold:.13,rootMargin:'0px 0px -7% 0px'});
+
+    const unique=[...new Set(candidates)];
+    unique.forEach(el=>pageObserver.observe(el));
+
+    // Safety: anything already near the very top is allowed to animate on the next frame after scroll reset.
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      unique.forEach(el=>{
+        const r=el.getBoundingClientRect();
+        if(r.bottom>80 && r.top<(window.innerHeight||700)*.86) onEnter(el);
+      });
+    }));
+  }
+
+  const baseNavigate=window.navigate;
+  if(typeof baseNavigate==='function'){
+    window.navigate=function(id){
+      hardTop();
+      const result=baseNavigate.call(this,id);
+      hardTop();
+      requestAnimationFrame(()=>{
+        hardTop();
+        const page=document.getElementById('page-'+id);
+        if(page) armPage(page);
+      });
+      return result;
+    };
+  }
+
+  // Re-arm the active page once after this patch loads.
+  requestAnimationFrame(()=>{
+    const active=document.querySelector('.page.active');
+    if(active) armPage(active);
+  });
+})();
+</script>
+
+
+<!-- v7.5.1 — money flow only: always-on, independent animation -->
+<style id="np-v7-5-1-always-flow-css">
+.money-flow-card .np-always-flow-dot{
+  position:absolute;
+  z-index:8;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  pointer-events:none;
+  background:#71f1bb;
+  box-shadow:0 0 0 5px rgba(113,241,187,.08),0 0 24px rgba(113,241,187,.95);
+  opacity:0;
+  will-change:transform,opacity;
+}
+@media (min-width:701px){
+  .money-flow-card .np-always-flow-dot{
+    left:0;top:50%;
+    transform:translate3d(-6px,-50%,0);
+    animation:npAlwaysFlowH 1.8s cubic-bezier(.4,0,.2,1) infinite!important;
+  }
+  .money-flow-card .flow-arrow:nth-of-type(4) .np-always-flow-dot{animation-delay:.9s!important}
+  @keyframes npAlwaysFlowH{
+    0%{transform:translate3d(-6px,-50%,0);opacity:0}
+    10%{opacity:1}
+    82%{opacity:1}
+    100%{transform:translate3d(calc(100% + 54px),-50%,0);opacity:0}
+  }
+}
+@media (max-width:700px){
+  .money-flow-card .np-always-flow-dot{
+    left:50%;top:0;
+    transform:translate3d(-50%,-6px,0);
+    animation:npAlwaysFlowV 1.75s cubic-bezier(.4,0,.2,1) infinite!important;
+  }
+  .money-flow-card .flow-arrow:nth-of-type(4) .np-always-flow-dot{animation-delay:.85s!important}
+  @keyframes npAlwaysFlowV{
+    0%{transform:translate3d(-50%,-6px,0);opacity:0}
+    10%{opacity:1}
+    82%{opacity:1}
+    100%{transform:translate3d(-50%,48px,0);opacity:0}
+  }
+}
+</style>
+<script id="np-v7-5-1-always-flow-js">
+(function(){
+  function installAlwaysFlow(root=document){
+    root.querySelectorAll?.('.money-flow-card .flow-arrow').forEach(function(arrow){
+      if(arrow.querySelector('.np-always-flow-dot')) return;
+      var dot=document.createElement('span');
+      dot.className='np-always-flow-dot';
+      dot.setAttribute('aria-hidden','true');
+      arrow.appendChild(dot);
+    });
+  }
+  function refresh(){installAlwaysFlow(document)}
+  refresh();
+  var host=document.getElementById('app')||document.body;
+  new MutationObserver(function(){refresh()}).observe(host,{childList:true,subtree:true});
+  window.addEventListener('pageshow',refresh);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden) refresh()});
+})();
+</script>
 </body>
 </html>
 <style>
